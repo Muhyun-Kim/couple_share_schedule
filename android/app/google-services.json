@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "7753173160",
+    "project_id": "coupleshareschedule",
+    "storage_bucket": "coupleshareschedule.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7753173160:android:547b51a2daffb39509da9d",
+        "android_client_info": {
+          "package_name": "com.example.couple_share_schedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7753173160-mo33icuc72uhqnbgvu1c90rv2caaooh0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaf-cIngHsRUGI65Nu1wL8dSct_SkgALs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7753173160-mo33icuc72uhqnbgvu1c90rv2caaooh0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
