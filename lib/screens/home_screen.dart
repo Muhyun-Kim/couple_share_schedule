@@ -1,4 +1,4 @@
-import 'package:couple_share_schedule/screens/auth_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,6 +6,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const AuthScreen();
+    return Scaffold(
+      body: Center(
+        child: Column(
+          children: [
+            TextButton(
+              onPressed: () => FirebaseAuth.instance.signOut(),
+              child: const Text("logout"),
+            )
+          ],
+        ),
+      ),
+    );
   }
 }
