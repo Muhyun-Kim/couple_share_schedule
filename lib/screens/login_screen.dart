@@ -1,3 +1,7 @@
+//Author : muhyun-kim
+//Modified : 2023/03/15
+//Function : ログイン画面
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
@@ -10,18 +14,18 @@ class LoginScreen extends StatefulWidget {
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
+//google login
 Future<UserCredential> signInWithGoogle() async {
   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
   final GoogleSignInAuthentication? googleAuth =
       await googleUser?.authentication;
-
   final credential = GoogleAuthProvider.credential(
     accessToken: googleAuth?.accessToken,
     idToken: googleAuth?.idToken,
   );
   return await FirebaseAuth.instance.signInWithCredential(credential);
 }
+
 
 class _LoginScreenState extends State<LoginScreen> {
   @override

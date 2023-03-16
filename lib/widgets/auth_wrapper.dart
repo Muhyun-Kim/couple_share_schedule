@@ -1,3 +1,7 @@
+//Author : muhyun-kim
+//Modified : 2023/03/15
+//Function : 最初アプリを開い際、ログイン状態による画面表示
+
 import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:couple_share_schedule/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';

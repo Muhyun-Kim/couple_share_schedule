@@ -1,5 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
+//Author : muhyun-kim
+//Modified : 2023/03/15
+//Function : ログイン状態の時、最初表示される画面
+
 import 'package:flutter/material.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -7,15 +11,20 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: [
-            TextButton(
-              onPressed: () => FirebaseAuth.instance.signOut(),
-              child: const Text("logout"),
-            )
-          ],
+      appBar: AppBar(
+        backgroundColor: Colors.blueGrey,
+        title: const Text(
+          "Sechedul",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
         ),
+      ),
+      body: Row(
+        children: const [
+
+        ],
       ),
     );
   }
