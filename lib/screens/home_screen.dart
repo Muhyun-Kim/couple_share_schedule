@@ -14,6 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var popMenuList = ["pop1", "pop2", "pop3"];
+
   CalendarFormat _calendarFormat = CalendarFormat.month;
   // ignore: unused_field
   DateTime _focusedDay = DateTime.utc(2023);
@@ -30,7 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
   };
   List<String> _selectedEvents = [];
 
-  
+  var userName = FirebaseAuth.instance.currentUser?.displayName;
+  var userImg = FirebaseAuth.instance.currentUser?.photoURL;
 
   @override
   Widget build(BuildContext context) {
@@ -84,6 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           //日程を表示する画面（後で変える）
+
           Expanded(
             child: ListView.builder(
               itemCount: _selectedEvents.length,
@@ -103,15 +107,22 @@ class _HomeScreenState extends State<HomeScreen> {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            DrawerHeader(
+              decoration: const BoxDecoration(
+                color: Color.fromARGB(255, 7, 202, 205),
               ),
-              child: Text(
-                "userName",
-                style: TextStyle(
-                  color: Colors.white,
-                ),
+              child: Column(
+                children: [
+                  Text(
+                    userName ?? "GuestUser",
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                  Image(
+                    image: NetworkImage(userImg ?? ""),
+                  ),
+                ],
               ),
             ),
             ListTile(
