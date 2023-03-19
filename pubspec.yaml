@@ -40,6 +40,7 @@ dependencies:
   flutter_signin_button: ^2.0.0
   table_calendar: ^3.0.8
   intl: ^0.17.0
+  firebase_database: ^10.0.16
 
 dev_dependencies:
   flutter_test:

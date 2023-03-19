@@ -2,6 +2,7 @@
 //Modified : 2023/03/15
 //Function : ログイン状態の時、最初表示される画面
 
+import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -40,13 +41,29 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 7, 202, 205),
-        title: const Text(
-          "Sechedul",
-          style: TextStyle(
+        elevation: 0.0,
+        title: Text(
+          userName ?? "Guest",
+          style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PartnerMainScreen(),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.favorite,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
