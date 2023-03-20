@@ -3,6 +3,7 @@
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:couple_share_schedule/screens/partner_main_screen.dart';
+import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -15,8 +16,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var popMenuList = ["pop1", "pop2", "pop3"];
-
   CalendarFormat _calendarFormat = CalendarFormat.month;
   // ignore: unused_field
   DateTime _focusedDay = DateTime.utc(2023);
@@ -50,6 +49,17 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
+          IconButton(
+            onPressed: () {
+              showModalBottomSheet<void>(
+                context: context,
+                builder: (BuildContext context) {
+                  return AddSchedule(focusedDay: _focusedDay);
+                },
+              );
+            },
+            icon: const Icon(Icons.add),
+          ),
           IconButton(
             onPressed: () {
               Navigator.push(
