@@ -51,8 +51,9 @@ class _HomeScreenState extends State<HomeScreen> {
         actions: [
           IconButton(
             onPressed: () {
-              showModalBottomSheet<void>(
+              showModalBottomSheet(
                 context: context,
+                isScrollControlled: true,
                 builder: (BuildContext context) {
                   return AddSchedule(focusedDay: _focusedDay);
                 },
