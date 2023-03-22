@@ -2,6 +2,8 @@
 //Modified : 2023/03/20
 //Function : ログイン状態の時、最初表示される画面
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -18,6 +20,7 @@ class _AddScheduleState extends State<AddSchedule> {
   final TextEditingController startTimeInput = TextEditingController();
   final TextEditingController endTimeInput = TextEditingController();
   final TextEditingController scheduleInput = TextEditingController();
+  final userId = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
@@ -30,7 +33,7 @@ class _AddScheduleState extends State<AddSchedule> {
   Widget build(BuildContext context) {
     final formattedDate = DateFormat('MM月dd日').format(widget.focusedDay);
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.4,
+      height: MediaQuery.of(context).size.height * 0.9,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 25,
@@ -108,11 +111,52 @@ class _AddScheduleState extends State<AddSchedule> {
                       ),
                     ),
                     ElevatedButton(
-                      onPressed: () {
-                        print(formattedDate);
-                        print(startTimeInput.text);
-                        print(endTimeInput.text);
-                        print(scheduleInput.text);
+                      onPressed: () async {
+                        if (startTimeInput.text != "" &&
+                            endTimeInput.text != "" &&
+                            scheduleInput.text != "") {
+                          var scheduleInfo = <String, String>{
+                            "startTime": startTimeInput.text,
+                            "endTime": endTimeInput.text,
+                            "scheduleTitle": scheduleInput.text,
+                          };
+                          FirebaseFirestore.instance
+                              .collection("$userId")
+                              .doc(formattedDate)
+                              .set(scheduleInfo);
+                        } else if (scheduleInput.text != "") {
+                          return showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text("スケジュールを入力してください"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("OK"))
+                                ],
+                              );
+                            },
+                          );
+                        } else {
+                          return showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                content: const Text("時間を入力してください"),
+                                actions: [
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text("OK"))
+                                ],
+                              );
+                            },
+                          );
+                        }
                       },
                       child: const Text("保存"),
                     )
