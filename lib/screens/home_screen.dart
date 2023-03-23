@@ -18,7 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   // ignore: unused_field
-  DateTime _focusedDay = DateTime.utc(2023);
+  DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
   //このサンプルは後で要変更
@@ -30,7 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
     ],
     DateTime.utc(2023, 3, 20): ['thirdEvent', 'fourthEvent']
   };
+
+  final userId = FirebaseAuth.instance.currentUser?.uid;
+
+  // FirebaseFirestore.instance.collection(userId).get().then((res)=>print(""));
+
   List<String> _selectedEvents = [];
+
 
   var userName = FirebaseAuth.instance.currentUser?.displayName;
   var userImg = FirebaseAuth.instance.currentUser?.photoURL;

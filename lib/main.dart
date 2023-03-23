@@ -1,6 +1,7 @@
 import 'package:couple_share_schedule/widgets/auth_wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 import 'firebase_options.dart';
@@ -11,7 +12,8 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  initializeDateFormatting().then((_) => runApp(const MyApp()));
+  initializeDateFormatting()
+      .then((_) => runApp(const ProviderScope(child: MyApp())));
 }
 
 class MyApp extends StatelessWidget {
