@@ -2,9 +2,11 @@
 //Modified : 2023/03/15
 //Function : ログイン状態の時、最初表示される画面
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -31,15 +33,17 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.utc(2023, 3, 20): ['thirdEvent', 'fourthEvent']
   };
 
-  final userId = FirebaseAuth.instance.currentUser?.uid;
-
-  // FirebaseFirestore.instance.collection(userId).get().then((res)=>print(""));
-
   List<String> _selectedEvents = [];
-
 
   var userName = FirebaseAuth.instance.currentUser?.displayName;
   var userImg = FirebaseAuth.instance.currentUser?.photoURL;
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+
+
+  void instance() {
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {

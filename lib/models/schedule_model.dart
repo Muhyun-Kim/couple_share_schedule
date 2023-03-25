@@ -1,7 +1,8 @@
 class ScheduleModel {
-  final String startTime, endTime, scheduleTitle;
-  ScheduleModel(Map<String, dynamic> json)
-      : startTime = json['startTime'],
-        endTime = json['endTime'],
-        scheduleTitle = json['scheduleTitle'];
+  String startTime, endTime, scheduleTitle;
+  ScheduleModel(
+    this.startTime,
+    this.endTime,
+    this.scheduleTitle,
+  );
 }
