@@ -115,7 +115,7 @@ class _AddScheduleState extends State<AddSchedule> {
                         if (startTimeInput.text != "" &&
                             endTimeInput.text != "" &&
                             scheduleInput.text != "") {
-                          var scheduleInfo = <String, String>{
+                          final scheduleInfo = <String, String>{
                             "startTime": startTimeInput.text,
                             "endTime": endTimeInput.text,
                             "scheduleTitle": scheduleInput.text,

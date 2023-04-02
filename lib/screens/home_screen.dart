@@ -3,10 +3,10 @@
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -25,25 +25,23 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //このサンプルは後で要変更
   final sampleMap = {
-    DateTime.utc(2023, 3, 7): [
+    DateTime.utc(2023, 4, 7): [
       'firstEvent',
       'secodnEvent',
       'five',
     ],
-    DateTime.utc(2023, 3, 20): ['thirdEvent', 'fourthEvent']
+    DateTime.utc(2023, 4, 20): ['thirdEvent', 'fourthEvent']
   };
 
   List<String> _selectedEvents = [];
 
   var userName = FirebaseAuth.instance.currentUser?.displayName;
   var userImg = FirebaseAuth.instance.currentUser?.photoURL;
-    final userId = FirebaseAuth.instance.currentUser?.uid;
-
+  final userId = FirebaseAuth.instance.currentUser?.uid;
 
   void instance() {
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
