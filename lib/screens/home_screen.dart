@@ -33,6 +33,25 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.utc(2023, 4, 20): ['thirdEvent', 'fourthEvent']
   };
 
+  final schedulesReference = FirebaseFirestore.instance
+      .collection('posts')
+      .withConverter<ScheduleListModel>(
+    fromFirestore: ((snapshot, _) {
+      return ScheduleListModel.fromFireStore(snapshot);
+    }),
+    toFirestore: ((value, _) {
+      return value.toMap();
+    }),
+  );
+
+  Future<void> getSchedule() async {}
+
+  @override
+  void initState() {
+    super.initState();
+    getSchedule();
+  }
+
   List<String> _selectedEvents = [];
 
   var userName = FirebaseAuth.instance.currentUser?.displayName;
@@ -63,7 +82,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 context: context,
                 isScrollControlled: true,
                 builder: (BuildContext context) {
-                  return AddSchedule(focusedDay: _focusedDay);
+                  return AddSchedule(
+                    focusedDay: _focusedDay,
+                    schedulesReference: schedulesReference,
+                  );
                 },
               );
             },
@@ -85,6 +107,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
       body: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -124,8 +147,10 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           //日程を表示する画面（後で変える）
 
-          Expanded(
+          SizedBox(
+            height: 300,
             child: ListView.builder(
+              shrinkWrap: true,
               itemCount: _selectedEvents.length,
               itemBuilder: (context, index) {
                 final event = _selectedEvents[index];

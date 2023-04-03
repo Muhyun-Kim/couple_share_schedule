@@ -3,14 +3,18 @@
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AddSchedule extends StatefulWidget {
   final DateTime focusedDay;
+  final CollectionReference<ScheduleListModel> schedulesReference;
 
-  const AddSchedule({Key? key, required this.focusedDay}) : super(key: key);
+  const AddSchedule(
+      {Key? key, required this.focusedDay, required this.schedulesReference})
+      : super(key: key);
 
   @override
   State<AddSchedule> createState() => _AddScheduleState();
@@ -115,15 +119,21 @@ class _AddScheduleState extends State<AddSchedule> {
                         if (startTimeInput.text != "" &&
                             endTimeInput.text != "" &&
                             scheduleInput.text != "") {
-                          final scheduleInfo = <String, String>{
-                            "startTime": startTimeInput.text,
-                            "endTime": endTimeInput.text,
-                            "scheduleTitle": scheduleInput.text,
-                          };
-                          FirebaseFirestore.instance
-                              .collection("$userId")
-                              .doc(formattedDate)
-                              .set(scheduleInfo);
+                          final user = FirebaseAuth.instance.currentUser!;
+                          final userId = user.uid;
+                          final userName = user.displayName!;
+                          final newDocumentReference =
+                              widget.schedulesReference.doc();
+                          final newSchedule = ScheduleListModel(
+                            userId: userId,
+                            userName: userName,
+                            startTime: startTimeInput.text,
+                            endTime: endTimeInput.text,
+                            scheduleTitle: scheduleInput.text,
+                            selectedDate: widget.focusedDay,
+                            reference: newDocumentReference,
+                          );
+                          newDocumentReference.set(newSchedule);
                         } else if (scheduleInput.text != "") {
                           return showDialog(
                             context: context,

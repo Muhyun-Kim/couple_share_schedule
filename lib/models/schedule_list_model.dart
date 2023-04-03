@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ScheduleListModel {
+  final String userId;
+  final String userName;
   final DateTime selectedDate;
   final String startTime;
   final String endTime;
@@ -8,6 +10,8 @@ class ScheduleListModel {
   final DocumentReference reference;
 
   ScheduleListModel({
+    required this.userId,
+    required this.userName,
     required this.selectedDate,
     required this.startTime,
     required this.endTime,
@@ -16,9 +20,11 @@ class ScheduleListModel {
   });
 
   factory ScheduleListModel.fromFireStore(
-      DocumentSnapshot<Map<DateTime, List<String>>> snapshot) {
+      DocumentSnapshot<Map<String, dynamic>> snapshot) {
     final data = snapshot.data()!;
     return ScheduleListModel(
+      userId: data['userId'] as String,
+      userName: data['userName'] as String,
       selectedDate: data['selectedDate'] as DateTime,
       startTime: data['startTime'] as String,
       endTime: data['endTime'] as String,
@@ -27,9 +33,10 @@ class ScheduleListModel {
     );
   }
 
-  Map<DateTime, List<String>> toMap() {
+  Map<String, dynamic> toMap() {
     return {
-      selectedDate: [startTime, endTime, scheduleTitle],
+      "selectedDate": selectedDate,
+      "scheduleInfo": [startTime, endTime, scheduleTitle],
     };
   }
 }
