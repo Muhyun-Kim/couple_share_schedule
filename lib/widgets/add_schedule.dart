@@ -1,5 +1,5 @@
 //Author : muhyun-kim
-//Modified : 2023/03/20
+//Modified : 2023/04/04
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -134,6 +134,7 @@ class _AddScheduleState extends State<AddSchedule> {
                             reference: newDocumentReference,
                           );
                           newDocumentReference.set(newSchedule);
+                          Navigator.of(context).pop();
                         } else if (scheduleInput.text != "") {
                           return showDialog(
                             context: context,
