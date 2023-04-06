@@ -8,6 +8,7 @@ import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -18,8 +19,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var userName = FirebaseAuth.instance.currentUser?.displayName;
+  var userImg = FirebaseAuth.instance.currentUser?.photoURL;
+  String? userId;
+
+  /// ログイン状態の時、最初表示される画面
+  final _nameTextEditingController =
+      Provider.autoDispose<TextEditingController>(
+    (_) => TextEditingController(),
+  );
+
+  /// カレンダーの設定
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  // ignore: unused_field
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
@@ -33,34 +44,55 @@ class _HomeScreenState extends State<HomeScreen> {
     DateTime.utc(2023, 4, 20): ['thirdEvent', 'fourthEvent']
   };
 
-  final schedulesReference = FirebaseFirestore.instance
-      .collection('posts')
-      .withConverter<ScheduleListModel>(
-    fromFirestore: ((snapshot, _) {
-      return ScheduleListModel.fromFireStore(snapshot);
-    }),
-    toFirestore: ((value, _) {
-      return value.toMap();
-    }),
-  );
+  late CollectionReference<ScheduleListModel> schedulesReference;
 
-  Future<void> getSchedule() async {}
+  // Future<void> getSchedule() async {
+  //   final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  //   final docRef = FirebaseFirestore.instance.collection(userId).get().then(
+  //     (querySnapshot) {
+  //       for (var docSnapshot in querySnapshot.docs) {
+  //         final data = docSnapshot.get("scheduleTitle");
+  //         // print('${docSnapshot.id} => $data');
+  //       }
+  //     },
+  //   );
+  // }
+
+  Future<Map<DateTime, List<String>>> getSchedule() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    Map<DateTime, List<String>> dataMap = {};
+
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection(userId).get();
+
+    for (var doc in snapshot.docs) {
+      DateTime datetime = doc['selectedDate'].toDate();
+      List<String> list = List<String>.from(doc['scheduleTitle']);
+      dataMap[datetime] = list;
+      print(dataMap);
+    }
+    return dataMap;
+  }
 
   @override
   void initState() {
     super.initState();
+    userId = FirebaseAuth.instance.currentUser!.uid;
+    schedulesReference =
+        FirebaseFirestore.instance.collection(userId!).withConverter(
+      fromFirestore: ((snapshot, _) {
+        return ScheduleListModel.fromFireStore(snapshot);
+      }),
+      toFirestore: ((value, _) {
+        return value.toMap();
+      }),
+    );
     getSchedule();
+    // getData();
   }
 
   List<String> _selectedEvents = [];
-
-  var userName = FirebaseAuth.instance.currentUser?.displayName;
-  var userImg = FirebaseAuth.instance.currentUser?.photoURL;
-  final userId = FirebaseAuth.instance.currentUser?.uid;
-
-  void instance() {
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
