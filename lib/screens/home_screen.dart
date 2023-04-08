@@ -6,6 +6,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
+import 'package:couple_share_schedule/widgets/left_menu.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -35,45 +36,30 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? _selectedDay;
 
   //このサンプルは後で要変更
-  final sampleMap = {
+  final Map<DateTime, List<String>> sampleScheduleList = {
     DateTime.utc(2023, 4, 7): [
       'firstEvent',
-      'secodnEvent',
-      'five',
     ],
     DateTime.utc(2023, 4, 20): ['thirdEvent', 'fourthEvent']
   };
 
   late CollectionReference<ScheduleListModel> schedulesReference;
 
-  // Future<void> getSchedule() async {
+  // Future<Map<DateTime, List<String>>> getSchedule() async {
   //   final userId = FirebaseAuth.instance.currentUser!.uid;
+  //   Map<DateTime, List<String>> dataMap = {};
 
-  //   final docRef = FirebaseFirestore.instance.collection(userId).get().then(
-  //     (querySnapshot) {
-  //       for (var docSnapshot in querySnapshot.docs) {
-  //         final data = docSnapshot.get("scheduleTitle");
-  //         // print('${docSnapshot.id} => $data');
-  //       }
-  //     },
-  //   );
+  //   QuerySnapshot snapshot =
+  //       await FirebaseFirestore.instance.collection(userId).get();
+  //   for (var doc in snapshot.docs) {
+  //     DateTime datetime = doc['selectedDate'].toDate();
+  //     List<String> list = List<String>.from(doc['scheduleTitle']);
+  //     dataMap[datetime] = list;
+  //   }
+  //   return dataMap;
   // }
 
-  Future<Map<DateTime, List<String>>> getSchedule() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-    Map<DateTime, List<String>> dataMap = {};
-
-    QuerySnapshot snapshot =
-        await FirebaseFirestore.instance.collection(userId).get();
-
-    for (var doc in snapshot.docs) {
-      DateTime datetime = doc['selectedDate'].toDate();
-      List<String> list = List<String>.from(doc['scheduleTitle']);
-      dataMap[datetime] = list;
-      print(dataMap);
-    }
-    return dataMap;
-  }
+  // var dataMap;
 
   @override
   void initState() {
@@ -82,14 +68,15 @@ class _HomeScreenState extends State<HomeScreen> {
     schedulesReference =
         FirebaseFirestore.instance.collection(userId!).withConverter(
       fromFirestore: ((snapshot, _) {
+        print(ScheduleListModel.fromFireStore(snapshot));
         return ScheduleListModel.fromFireStore(snapshot);
       }),
       toFirestore: ((value, _) {
         return value.toMap();
       }),
     );
-    getSchedule();
-    // getData();
+    // dataMap = getSchedule();
+    print(schedulesReference);
   }
 
   List<String> _selectedEvents = [];
@@ -108,6 +95,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
+          //テストのためのボタン
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.search),
+          ),
           IconButton(
             onPressed: () {
               showModalBottomSheet(
@@ -168,12 +160,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   () {
                     _selectedDay = selectedDay;
                     _focusedDay = focusedDay;
-                    _selectedEvents = sampleMap[selectedDay] ?? [];
+                    _selectedEvents = sampleScheduleList[selectedDay] ?? [];
                   },
                 );
               },
               eventLoader: (date) {
-                return sampleMap[date] ?? [];
+                return sampleScheduleList[date] ?? [];
               },
             ),
           ),
@@ -196,35 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            DrawerHeader(
-              decoration: const BoxDecoration(
-                color: Color.fromARGB(255, 7, 202, 205),
-              ),
-              child: Column(
-                children: [
-                  Text(
-                    userName ?? "GuestUser",
-                    style: const TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                  Image(
-                    image: NetworkImage(userImg ?? ""),
-                  ),
-                ],
-              ),
-            ),
-            ListTile(
-              title: const Text("ログアウト"),
-              onTap: () => FirebaseAuth.instance.signOut(),
-            ),
-          ],
-        ),
-      ),
+      drawer: leftMenu(),
     );
   }
 }
