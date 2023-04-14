@@ -47,9 +47,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   late CollectionReference<ScheduleListModel> schedulesReference;
 
-  Future getSchedule() async {
+  Future<Map<DateTime, List<String>>> getSchedule() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
-    Map<DateTime, List> scheduleMap = {};
+    Map<DateTime, List<String>> scheduleMap = {};
 
     schedulesReference = FirebaseFirestore.instance
         .collection(userId)
@@ -61,23 +61,32 @@ class _HomeScreenState extends State<HomeScreen> {
         return value.toMap();
       }),
     );
-    final QuerySnapshot schduleListSnapshot = await FirebaseFirestore.instance
+    final schduleListSnapshot = await FirebaseFirestore.instance
         .collection(userId)
         .orderBy("selectedDate")
         .get();
     final schedule = schduleListSnapshot.docs.map((doc) {
       return doc.data();
     }).toList();
+
     for (var i = 0; i < schedule.length; i++) {
-      print(schedule[i]);
+      final selectedDate = (schedule[i]['selectedDate'] as Timestamp).toDate();
+      final DateTime selectedUtc =
+          DateTime.utc(selectedDate.year, selectedDate.month, selectedDate.day);
+      final scheduleInfo =
+          schedule[i]['scheduleInfo'].cast<String>() as List<String>;
+      scheduleMap[selectedUtc] = scheduleInfo;
     }
+    print(scheduleMap);
     return scheduleMap;
   }
+
+  var scheduleMap;
 
   @override
   void initState() {
     super.initState();
-    getSchedule();
+    final scheduleMap = getSchedule();
   }
 
   List<String> _selectedEvents = [];
