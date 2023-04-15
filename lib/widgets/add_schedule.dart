@@ -4,6 +4,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
+import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -119,22 +120,23 @@ class _AddScheduleState extends State<AddSchedule> {
                         if (startTimeInput.text != "" &&
                             endTimeInput.text != "" &&
                             scheduleInput.text != "") {
-                          final user = FirebaseAuth.instance.currentUser!;
-                          final userId = user.uid;
-                          final userName = user.displayName!;
-                          final newDocumentReference =
-                              widget.schedulesReference.doc();
+                          final List scheduleInfo = [
+                            "${startTimeInput.text} - ${endTimeInput.text} : ${scheduleInput.text}"
+                          ];
+                          final newDocumentReference = widget.schedulesReference
+                              .doc(widget.focusedDay
+                                  .toString()
+                                  .substring(0, 10));
                           final newSchedule = ScheduleListModel(
-                            userId: userId,
-                            userName: userName,
-                            startTime: startTimeInput.text,
-                            endTime: endTimeInput.text,
-                            scheduleTitle: scheduleInput.text,
                             selectedDate: widget.focusedDay,
-                            reference: newDocumentReference,
+                            scheduleInfo: scheduleInfo,
                           );
                           newDocumentReference.set(newSchedule);
                           Navigator.of(context).pop();
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      const HomeScreen()));
                         } else if (scheduleInput.text != "") {
                           return showDialog(
                             context: context,
