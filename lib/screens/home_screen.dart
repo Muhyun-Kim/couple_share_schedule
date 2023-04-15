@@ -36,15 +36,6 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  //このサンプルは後で要変更
-  final Map<DateTime, List<String>> sampleScheduleList = {
-    DateTime.utc(2023, 4, 07): [
-      'firstEvent',
-    ],
-    DateTime.utc(2023, 4, 20): ['thirdEvent', 'fourthEvent'],
-    DateTime.utc(2023, 4, 10): ["test"]
-  };
-
   late CollectionReference<ScheduleListModel> schedulesReference;
 
   Future<Map<DateTime, List<String>>> getSchedule() async {
@@ -77,16 +68,19 @@ class _HomeScreenState extends State<HomeScreen> {
           schedule[i]['scheduleInfo'].cast<String>() as List<String>;
       scheduleMap[selectedUtc] = scheduleInfo;
     }
-    print(scheduleMap);
     return scheduleMap;
   }
 
-  var scheduleMap;
+  var scheduleMap = <DateTime, List<String>>{};
 
   @override
   void initState() {
     super.initState();
-    final scheduleMap = getSchedule();
+    getSchedule().then((value) {
+      setState(() {
+        scheduleMap = value;
+      });
+    });
   }
 
   List<String> _selectedEvents = [];
@@ -149,64 +143,66 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TableCalendar(
-              locale: 'ja_JP',
-              focusedDay: DateTime.now(),
-              firstDay: DateTime.utc(2020, 1, 1),
-              lastDay: DateTime.utc(2030, 12, 31),
-              calendarFormat: _calendarFormat,
-              availableCalendarFormats: const {
-                CalendarFormat.month: '週',
-                CalendarFormat.week: '月',
-              },
-              onFormatChanged: (format) {
-                setState(
-                  () {
-                    _calendarFormat = format;
-                  },
-                );
-              },
-              selectedDayPredicate: (day) {
-                return isSameDay(_selectedDay, day);
-              },
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(
-                  () {
-                    _selectedDay = selectedDay;
-                    _focusedDay = focusedDay;
-                    _selectedEvents = sampleScheduleList[selectedDay] ?? [];
-                  },
-                );
-              },
-              eventLoader: (date) {
-                return sampleScheduleList[date] ?? [];
-              },
+      body: Builder(builder: (context) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TableCalendar(
+                locale: 'ja_JP',
+                focusedDay: DateTime.now(),
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2030, 12, 31),
+                calendarFormat: _calendarFormat,
+                availableCalendarFormats: const {
+                  CalendarFormat.month: '週',
+                  CalendarFormat.week: '月',
+                },
+                onFormatChanged: (format) {
+                  setState(
+                    () {
+                      _calendarFormat = format;
+                    },
+                  );
+                },
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(
+                    () {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                      _selectedEvents = scheduleMap[selectedDay] ?? [];
+                    },
+                  );
+                },
+                eventLoader: (date) {
+                  return scheduleMap[date] ?? [];
+                },
+              ),
             ),
-          ),
-          //日程を表示する画面（後で変える）
+            //日程を表示する画面（後で変える）
 
-          SizedBox(
-            height: 300,
-            child: ListView.builder(
-              shrinkWrap: true,
-              itemCount: _selectedEvents.length,
-              itemBuilder: (context, index) {
-                final event = _selectedEvents[index];
-                return Card(
-                  child: ListTile(
-                    title: Text(event),
-                  ),
-                );
-              },
+            SizedBox(
+              height: 300,
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _selectedEvents.length,
+                itemBuilder: (context, index) {
+                  final event = _selectedEvents[index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(event),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
+          ],
+        );
+      }),
       drawer: leftMenu(),
     );
   }
