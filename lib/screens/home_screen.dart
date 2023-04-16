@@ -24,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var userName = FirebaseAuth.instance.currentUser?.displayName;
   var userImg = FirebaseAuth.instance.currentUser?.photoURL;
+
   String? userId;
   final Stream<QuerySnapshot> _scheduleStream =
       FirebaseFirestore.instance.collection('schedule').snapshots();
@@ -85,6 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     });
   }
+
 
   List<String> _selectedEvents = [];
 
@@ -188,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             //日程を表示する画面（後で変える）
 
-            ScheduleList(selectedEvents: _selectedEvents),
+            ScheduleList(selectedEvents: _selectedEvents, focusedDay: _focusedDay,),
           ],
         );
       }),

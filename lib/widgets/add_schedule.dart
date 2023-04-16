@@ -27,11 +27,29 @@ class _AddScheduleState extends State<AddSchedule> {
   final TextEditingController scheduleInput = TextEditingController();
   final userId = FirebaseAuth.instance.currentUser?.uid;
 
+  var schedulesReference;
+
+  Future getScheduleInfo() async {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final docName = widget.focusedDay.toString().substring(0, 10);
+    final schduleSnapshot =
+        await FirebaseFirestore.instance.collection(userId).doc(docName).get();
+    final scheduleInfo = schduleSnapshot.data();
+    return scheduleInfo;
+  }
+
+  var scheduleGetInfo;
+
   @override
   void initState() {
     startTimeInput.text = "";
     endTimeInput.text = "";
     super.initState();
+    getScheduleInfo().then((value) {
+      setState(() {
+        scheduleGetInfo = value;
+      });
+    });
   }
 
   @override
@@ -123,20 +141,30 @@ class _AddScheduleState extends State<AddSchedule> {
                           final List scheduleInfo = [
                             "${startTimeInput.text} - ${endTimeInput.text} : ${scheduleInput.text}"
                           ];
-                          final newDocumentReference = widget.schedulesReference
-                              .doc(widget.focusedDay
-                                  .toString()
-                                  .substring(0, 10));
+                          final newDocumentReference =
+                              widget.schedulesReference.doc(
+                            widget.focusedDay.toString().substring(0, 10),
+                          );
                           final newSchedule = ScheduleListModel(
                             selectedDate: widget.focusedDay,
                             scheduleInfo: scheduleInfo,
                           );
-                          newDocumentReference.set(newSchedule);
+                          if (scheduleGetInfo == null) {
+                            newDocumentReference.set(newSchedule);
+                          } else {
+                            newDocumentReference.update({
+                              "scheduleInfo":
+                                  FieldValue.arrayUnion(scheduleInfo)
+                            });
+                          }
+
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      const HomeScreen()));
+                            MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  const HomeScreen(),
+                            ),
+                          );
                         } else if (scheduleInput.text != "") {
                           return showDialog(
                             context: context,
