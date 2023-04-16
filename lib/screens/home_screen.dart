@@ -8,6 +8,7 @@ import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:couple_share_schedule/screens/test.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
+import 'package:couple_share_schedule/widgets/schedule_list.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,6 +25,8 @@ class _HomeScreenState extends State<HomeScreen> {
   var userName = FirebaseAuth.instance.currentUser?.displayName;
   var userImg = FirebaseAuth.instance.currentUser?.photoURL;
   String? userId;
+  final Stream<QuerySnapshot> _scheduleStream =
+      FirebaseFirestore.instance.collection('schedule').snapshots();
 
   /// ログイン状態の時、最初表示される画面
   final _nameTextEditingController =
@@ -185,21 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             //日程を表示する画面（後で変える）
 
-            SizedBox(
-              height: 300,
-              child: ListView.builder(
-                shrinkWrap: true,
-                itemCount: _selectedEvents.length,
-                itemBuilder: (context, index) {
-                  final event = _selectedEvents[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text(event),
-                    ),
-                  );
-                },
-              ),
-            ),
+            ScheduleList(selectedEvents: _selectedEvents),
           ],
         );
       }),
