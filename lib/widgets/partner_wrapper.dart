@@ -33,17 +33,30 @@ class _PartnerWrapperState extends State<PartnerWrapper> {
   void initState() {
     super.initState();
     getPartnerInfo().then((value) {
-      final partnerGetInfo = value;
-      print(partnerGetInfo);
+      partnerGetInfo = value;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (partnerGetInfo == null) {
-      return const PartnerAddScreen();
-    } else {
-      return const PartnerMainScreen();
-    }
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final partnerStream = FirebaseFirestore.instance
+        .collection(userId)
+        .doc("partner")
+        .snapshots();
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: partnerStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasData && snapshot.data!.exists) {
+          final partnerInfo = snapshot.data!.data();
+          return const PartnerMainScreen();
+        } else {
+          return const PartnerAddScreen();
+        }
+      },
+    );
   }
 }
