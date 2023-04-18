@@ -1,9 +1,11 @@
+import 'package:couple_share_schedule/widgets/user_qrcode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-Drawer leftMenu() {
+Drawer leftMenu(BuildContext context) {
   var userName = FirebaseAuth.instance.currentUser?.displayName;
   var userImg = FirebaseAuth.instance.currentUser?.photoURL;
+
   return Drawer(
     child: ListView(
       padding: EdgeInsets.zero,
@@ -25,6 +27,18 @@ Drawer leftMenu() {
               ),
             ],
           ),
+        ),
+        ListTile(
+          title: Text("ID: ${FirebaseAuth.instance.currentUser?.uid}"),
+          onTap: () {
+            showModalBottomSheet(
+              isScrollControlled: true,
+              context: context,
+              builder: (BuildContext buildContext) {
+                return const UserQRCode();
+              },
+            );
+          },
         ),
         ListTile(
           title: const Text("ログアウト"),
