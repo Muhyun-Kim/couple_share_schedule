@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -40,9 +41,16 @@ class _PartnerAddScreenState extends State<PartnerAddScreen> {
             ),
             Column(
               children: [
-                buildPartnerTextField(
-                  _partnerUidInput,
-                  "パートナーのIDを入力してください。",
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const MobileScannerScreen(),
+                      ),
+                    );
+                  },
+                  child: const Text("UIDを読み取る"),
                 ),
                 buildPartnerTextField(
                   _partnerNameInput,
