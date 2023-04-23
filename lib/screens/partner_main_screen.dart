@@ -1,8 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
-import 'package:couple_share_schedule/widgets/partner_main_screen_body.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+
+import '../widgets/partner_widget/partner_main_screen_body.dart';
 
 class PartnerMainScreen extends StatefulWidget {
   const PartnerMainScreen({super.key, required this.partnerInfo});

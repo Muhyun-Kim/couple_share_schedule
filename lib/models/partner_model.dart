@@ -1,3 +1,7 @@
+//Author : muhyun-kim
+//Modified : 2023/04/22
+//Function : スケジュール共有相手情報のモデル
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PartnerModel {

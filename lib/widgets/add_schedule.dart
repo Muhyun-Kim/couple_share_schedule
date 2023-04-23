@@ -1,5 +1,5 @@
 //Author : muhyun-kim
-//Modified : 2023/04/04
+//Modified : 2023/04/22
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -12,23 +12,21 @@ import 'package:intl/intl.dart';
 class AddSchedule extends StatefulWidget {
   final DateTime focusedDay;
   final CollectionReference<ScheduleListModel> schedulesReference;
-
   const AddSchedule(
       {Key? key, required this.focusedDay, required this.schedulesReference})
       : super(key: key);
-
   @override
   State<AddSchedule> createState() => _AddScheduleState();
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-  final TextEditingController startTimeInput = TextEditingController();
+  final TextEditingController _startTimeInput = TextEditingController();
   final TextEditingController endTimeInput = TextEditingController();
   final TextEditingController scheduleInput = TextEditingController();
   final userId = FirebaseAuth.instance.currentUser?.uid;
+  Map<String, dynamic>? scheduleGetInfo;
 
-  var schedulesReference;
-
+  
   Future getScheduleInfo() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final docName = widget.focusedDay.toString().substring(0, 10);
@@ -38,11 +36,25 @@ class _AddScheduleState extends State<AddSchedule> {
     return scheduleInfo;
   }
 
-  var scheduleGetInfo;
+  // エラーメッセージを表示するfunction
+  void _showAlertDialog(BuildContext context, String errorMessage) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(content: Text(errorMessage), actions: [
+          TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("OK"))
+        ]);
+      },
+    );
+  }
 
   @override
   void initState() {
-    startTimeInput.text = "";
+    _startTimeInput.text = "";
     endTimeInput.text = "";
     super.initState();
     getScheduleInfo().then((value) {
@@ -79,7 +91,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 child: Column(
                   children: [
                     TextField(
-                      controller: startTimeInput,
+                      controller: _startTimeInput,
                       decoration: const InputDecoration(
                         labelText: "開始時間",
                       ),
@@ -97,7 +109,7 @@ class _AddScheduleState extends State<AddSchedule> {
                               DateFormat('HH:mm').format(parsedEndTime);
                           setState(
                             () {
-                              startTimeInput.text = formattedStartTime;
+                              _startTimeInput.text = formattedStartTime;
                             },
                           );
                         }
@@ -135,11 +147,11 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        if (startTimeInput.text != "" &&
+                        if (_startTimeInput.text != "" &&
                             endTimeInput.text != "" &&
                             scheduleInput.text != "") {
                           final List scheduleInfo = [
-                            "${startTimeInput.text} - ${endTimeInput.text} : ${scheduleInput.text}"
+                            "${_startTimeInput.text} - ${endTimeInput.text} : ${scheduleInput.text}"
                           ];
                           final newDocumentReference =
                               widget.schedulesReference.doc(
@@ -157,7 +169,6 @@ class _AddScheduleState extends State<AddSchedule> {
                                   FieldValue.arrayUnion(scheduleInfo)
                             });
                           }
-
                           Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
@@ -166,37 +177,9 @@ class _AddScheduleState extends State<AddSchedule> {
                             ),
                           );
                         } else if (scheduleInput.text != "") {
-                          return showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: const Text("スケジュールを入力してください"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("OK"))
-                                ],
-                              );
-                            },
-                          );
+                          _showAlertDialog(context, "時間を入力してください");
                         } else {
-                          return showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                content: const Text("時間を入力してください"),
-                                actions: [
-                                  TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text("OK"))
-                                ],
-                              );
-                            },
-                          );
+                          _showAlertDialog(context, "スケジュールを入力してください");
                         }
                       },
                       child: const Text("保存"),

@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-class ScheduleList extends StatefulWidget {
-  const ScheduleList({
+class HomeScheduleList extends StatefulWidget {
+  const HomeScheduleList({
     super.key,
     required List<String> selectedEvents,
     required this.focusedDay,
@@ -12,12 +11,12 @@ class ScheduleList extends StatefulWidget {
 
   final List<String> _selectedEvents;
   final DateTime focusedDay;
+
   @override
-  State<ScheduleList> createState() => _ScheduleListState();
+  State<HomeScheduleList> createState() => _HomeScheduleListState();
 }
 
-class _ScheduleListState extends State<ScheduleList> {
-  final db = FirebaseFirestore.instance;
+class _HomeScheduleListState extends State<HomeScheduleList> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -46,11 +45,6 @@ class _ScheduleListState extends State<ScheduleList> {
                         'scheduleInfo': FieldValue.arrayRemove([event]),
                       };
                       docRef.update(deleteScheduleInfo);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const HomeScreen(),
-                        ),
-                      );
                     },
                     icon: const Icon(
                       Icons.delete,

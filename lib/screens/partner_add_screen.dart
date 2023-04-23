@@ -10,10 +10,22 @@ class PartnerAddScreen extends StatefulWidget {
 }
 
 class _PartnerAddScreenState extends State<PartnerAddScreen> {
-  final TextEditingController partnerUidInput = TextEditingController();
-  final TextEditingController partnerNameInput = TextEditingController();
+  final TextEditingController _partnerUidInput = TextEditingController();
+  final TextEditingController _partnerNameInput = TextEditingController();
+  final userId = FirebaseAuth.instance.currentUser!.uid;
 
-  @override
+  Widget buildPartnerTextField(
+      TextEditingController controller, String hintText) {
+    return TextField(
+      controller: controller,
+      textAlign: TextAlign.center,
+      decoration: InputDecoration(
+        border: InputBorder.none,
+        hintText: hintText,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,27 +40,18 @@ class _PartnerAddScreenState extends State<PartnerAddScreen> {
             ),
             Column(
               children: [
-                TextField(
-                  controller: partnerUidInput,
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "パートナーのIDを入力してください。",
-                  ),
+                buildPartnerTextField(
+                  _partnerUidInput,
+                  "パートナーのIDを入力してください。",
                 ),
-                TextField(
-                  controller: partnerNameInput,
-                  textAlign: TextAlign.center,
-                  decoration: const InputDecoration(
-                    border: InputBorder.none,
-                    hintText: "パートなの名前を入力してください。",
-                  ),
+                buildPartnerTextField(
+                  _partnerNameInput,
+                  "パートナーの名前を入力してください。",
                 ),
                 ElevatedButton(
                   onPressed: () {
-                    final userId = FirebaseAuth.instance.currentUser!.uid;
-                    final partnerUid = partnerUidInput.text;
-                    final partnerName = partnerNameInput.text;
+                    final partnerUid = _partnerUidInput.text;
+                    final partnerName = _partnerNameInput.text;
                     FirebaseFirestore.instance
                         .collection(userId)
                         .doc("partner")
