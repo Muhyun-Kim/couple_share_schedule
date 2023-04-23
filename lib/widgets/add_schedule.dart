@@ -9,6 +9,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+extension DateTimeExtension on DateTime {
+  DateTime applied(TimeOfDay time) {
+    return DateTime(year, month, day, time.hour, time.minute);
+  }
+}
+
 class AddSchedule extends StatefulWidget {
   final DateTime focusedDay;
   final CollectionReference<ScheduleListModel> schedulesReference;
@@ -21,12 +27,11 @@ class AddSchedule extends StatefulWidget {
 
 class _AddScheduleState extends State<AddSchedule> {
   final TextEditingController _startTimeInput = TextEditingController();
-  final TextEditingController endTimeInput = TextEditingController();
-  final TextEditingController scheduleInput = TextEditingController();
+  final TextEditingController _endTimeInput = TextEditingController();
+  final TextEditingController _scheduleInput = TextEditingController();
   final userId = FirebaseAuth.instance.currentUser?.uid;
   Map<String, dynamic>? scheduleGetInfo;
 
-  
   Future getScheduleInfo() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final docName = widget.focusedDay.toString().substring(0, 10);
@@ -55,7 +60,7 @@ class _AddScheduleState extends State<AddSchedule> {
   @override
   void initState() {
     _startTimeInput.text = "";
-    endTimeInput.text = "";
+    _endTimeInput.text = "";
     super.initState();
     getScheduleInfo().then((value) {
       setState(() {
@@ -103,20 +108,19 @@ class _AddScheduleState extends State<AddSchedule> {
                           context: context,
                         );
                         if (pickedStartTime != null && mounted) {
-                          DateTime parsedEndTime = DateFormat.jm().parse(
-                              pickedStartTime.format(context).toString());
-                          String formattedStartTime =
-                              DateFormat('HH:mm').format(parsedEndTime);
+                          final date = DateTime.now();
+                          final parsedStartTime = DateFormat.Hm()
+                              .format(date.applied(pickedStartTime));
                           setState(
                             () {
-                              _startTimeInput.text = formattedStartTime;
+                              _startTimeInput.text = parsedStartTime;
                             },
                           );
                         }
                       },
                     ),
                     TextField(
-                      controller: endTimeInput,
+                      controller: _endTimeInput,
                       decoration: const InputDecoration(
                         labelText: "終了時間",
                       ),
@@ -127,20 +131,19 @@ class _AddScheduleState extends State<AddSchedule> {
                           context: context,
                         );
                         if (pickedEndTime != null && mounted) {
-                          DateTime parsedEndTime = DateFormat.jm()
-                              .parse(pickedEndTime.format(context).toString());
-                          String formattedEndTime =
-                              DateFormat('HH:mm').format(parsedEndTime);
+                          final date = DateTime.now();
+                          final parsedEndTime = DateFormat.Hm()
+                              .format(date.applied(pickedEndTime));
                           setState(
                             () {
-                              endTimeInput.text = formattedEndTime;
+                              _endTimeInput.text = parsedEndTime;
                             },
                           );
                         }
                       },
                     ),
                     TextField(
-                      controller: scheduleInput,
+                      controller: _scheduleInput,
                       decoration: const InputDecoration(
                         hintText: "スケジュール入力欄",
                       ),
@@ -148,10 +151,10 @@ class _AddScheduleState extends State<AddSchedule> {
                     ElevatedButton(
                       onPressed: () async {
                         if (_startTimeInput.text != "" &&
-                            endTimeInput.text != "" &&
-                            scheduleInput.text != "") {
+                            _endTimeInput.text != "" &&
+                            _scheduleInput.text != "") {
                           final List scheduleInfo = [
-                            "${_startTimeInput.text} - ${endTimeInput.text} : ${scheduleInput.text}"
+                            "${_startTimeInput.text} - ${_endTimeInput.text} : ${_scheduleInput.text}"
                           ];
                           final newDocumentReference =
                               widget.schedulesReference.doc(
@@ -176,7 +179,7 @@ class _AddScheduleState extends State<AddSchedule> {
                                   const HomeScreen(),
                             ),
                           );
-                        } else if (scheduleInput.text != "") {
+                        } else if (_scheduleInput.text != "") {
                           _showAlertDialog(context, "時間を入力してください");
                         } else {
                           _showAlertDialog(context, "スケジュールを入力してください");

@@ -1,4 +1,3 @@
-import 'package:couple_share_schedule/models/partner_model.dart';
 import 'package:flutter/material.dart';
 
 class Test extends StatelessWidget {
