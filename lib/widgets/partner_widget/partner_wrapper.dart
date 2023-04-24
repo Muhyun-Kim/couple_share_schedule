@@ -31,7 +31,9 @@ class _PartnerWrapperState extends State<PartnerWrapper> {
         } else if (snapshot.hasError) {
           return Text("Error: ${snapshot.error}");
         } else {
-          return const PartnerAddScreen();
+          return PartnerAddScreen(
+            partnerUid: "UIDを読み取る",
+          );
         }
       },
     );

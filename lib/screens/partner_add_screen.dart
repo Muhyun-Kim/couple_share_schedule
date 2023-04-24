@@ -1,17 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class PartnerAddScreen extends StatefulWidget {
-  const PartnerAddScreen({super.key});
+  String partnerUid;
+  PartnerAddScreen({Key? key, required this.partnerUid}) : super(key: key);
 
   @override
   State<PartnerAddScreen> createState() => _PartnerAddScreenState();
 }
 
 class _PartnerAddScreenState extends State<PartnerAddScreen> {
-  final TextEditingController _partnerUidInput = TextEditingController();
+  String _partnerUid = "UIDを読み取る";
   final TextEditingController _partnerNameInput = TextEditingController();
   final userId = FirebaseAuth.instance.currentUser!.uid;
 
@@ -25,6 +27,12 @@ class _PartnerAddScreenState extends State<PartnerAddScreen> {
         hintText: hintText,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _partnerUid = widget.partnerUid;
   }
 
   @override
@@ -46,27 +54,36 @@ class _PartnerAddScreenState extends State<PartnerAddScreen> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => const MobileScannerScreen(),
+                        builder: (context) => MobileScannerScreen(
+                          partnerUid: _partnerUid,
+                        ),
                       ),
                     );
                   },
-                  child: const Text("UIDを読み取る"),
+                  child: Text(_partnerUid),
                 ),
                 buildPartnerTextField(
                   _partnerNameInput,
                   "パートナーの名前を入力してください。",
                 ),
                 ElevatedButton(
-                  onPressed: () {
-                    final partnerUid = _partnerUidInput.text;
+                  onPressed: () async {
+                    final partnerUid = _partnerUid;
                     final partnerName = _partnerNameInput.text;
-                    FirebaseFirestore.instance
+                    await FirebaseFirestore.instance
                         .collection(userId)
                         .doc("partner")
                         .set({
                       "partnerUid": partnerUid,
                       "partnerName": partnerName,
                     });
+                    if (!mounted) return;
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomeScreen(),
+                      ),
+                    );
                   },
                   child: const Text("追加"),
                 ),
