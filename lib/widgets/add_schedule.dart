@@ -160,6 +160,7 @@ class _AddScheduleState extends State<AddSchedule> {
                               widget.schedulesReference.doc(
                             widget.focusedDay.toString().substring(0, 10),
                           );
+
                           final newSchedule = ScheduleListModel(
                             selectedDate: widget.focusedDay,
                             scheduleInfo: scheduleInfo,
@@ -172,7 +173,6 @@ class _AddScheduleState extends State<AddSchedule> {
                                   FieldValue.arrayUnion(scheduleInfo)
                             });
                           }
-                          Navigator.of(context).pop();
                           Navigator.of(context).pushReplacement(
                             MaterialPageRoute(
                               builder: (BuildContext context) =>

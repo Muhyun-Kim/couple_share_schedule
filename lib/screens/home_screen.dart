@@ -4,14 +4,12 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
-import 'package:couple_share_schedule/screens/test.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/home_widget/home_schedule_list.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
 import 'package:couple_share_schedule/widgets/partner_widget/partner_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -42,7 +40,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final schedule = schduleListSnapshot.docs.map((doc) {
       return doc.data();
     }).toList();
-
     for (var i = 0; i < schedule.length; i++) {
       final selectedDate = (schedule[i]['selectedDate'] as Timestamp).toDate();
       final DateTime selectedUtc =
@@ -66,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    schedulesReference = FirebaseFirestore.instance
+    final CollectionReference<ScheduleListModel> schedulesReference = FirebaseFirestore.instance
         .collection(currentUser!.uid)
         .withConverter<ScheduleListModel>(
       fromFirestore: ((snapshot, _) {
@@ -88,20 +85,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
         actions: [
-          //テストのためのボタン
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (BuildContext context) {
-                    return const ProviderScope(child: Test());
-                  },
-                ),
-              );
-            },
-            icon: const Icon(Icons.search),
-          ),
           IconButton(
             onPressed: () {
               showModalBottomSheet(
@@ -173,8 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   },
                 ),
               ),
-              //日程を表示する画面（後で変える）
-
               HomeScheduleList(
                 selectedEvents: _selectedEvents,
                 focusedDay: _focusedDay,

@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -46,11 +45,9 @@ class _HomeScheduleListState extends State<HomeScheduleList> {
                         'scheduleInfo': FieldValue.arrayRemove([event]),
                       };
                       docRef.update(deleteScheduleInfo);
-                      Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(
-                          builder: (BuildContext context) => const HomeScreen(),
-                        ),
-                      );
+                      setState(() {
+                        widget._selectedEvents.remove(event);
+                      });
                     },
                     icon: const Icon(
                       Icons.delete,
