@@ -7,10 +7,14 @@ class HomeScheduleList extends StatefulWidget {
     super.key,
     required List<String> selectedEvents,
     required this.focusedDay,
+    required this.updateSchedule,
+    required this.scheduleMap,
   }) : _selectedEvents = selectedEvents;
 
   final List<String> _selectedEvents;
   final DateTime focusedDay;
+  final Function updateSchedule;
+  final Map<DateTime, List<String>> scheduleMap;
 
   @override
   State<HomeScheduleList> createState() => _HomeScheduleListState();
@@ -45,7 +49,9 @@ class _HomeScheduleListState extends State<HomeScheduleList> {
                         'scheduleInfo': FieldValue.arrayRemove([event]),
                       };
                       docRef.update(deleteScheduleInfo);
+                      widget.updateSchedule();
                       setState(() {
+                        widget.scheduleMap;
                         widget._selectedEvents.remove(event);
                       });
                     },

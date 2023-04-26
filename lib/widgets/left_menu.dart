@@ -3,8 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 Drawer leftMenu(BuildContext context) {
-  var userName = FirebaseAuth.instance.currentUser?.displayName;
-  var userImg = FirebaseAuth.instance.currentUser?.photoURL;
+  final currentUser = FirebaseAuth.instance.currentUser!;
 
   return Drawer(
     child: ListView(
@@ -13,23 +12,20 @@ Drawer leftMenu(BuildContext context) {
         DrawerHeader(
           decoration: const BoxDecoration(
             color: Color.fromARGB(255, 7, 202, 205),
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(7),
+            ),
           ),
           child: Column(
             children: [
-              Text(
-                userName ?? "GuestUser",
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
               Image(
-                image: NetworkImage(userImg ?? ""),
+                image: NetworkImage(currentUser.photoURL ?? ""),
               ),
             ],
           ),
         ),
         ListTile(
-          title: Text("ID: ${FirebaseAuth.instance.currentUser?.uid}"),
+          title: Text("ID: ${currentUser.uid}"),
           onTap: () {
             showModalBottomSheet(
               isScrollControlled: true,
@@ -39,6 +35,15 @@ Drawer leftMenu(BuildContext context) {
               },
             );
           },
+        ),
+        ListTile(
+          title: Text(currentUser.displayName ?? "Guest"),
+          onTap: () {
+            //　名前変更画面追加
+          },
+        ),
+        const ListTile(
+          title: Text("利用規約"),
         ),
         ListTile(
           title: const Text("ログアウト"),

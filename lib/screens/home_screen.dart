@@ -51,21 +51,25 @@ class _HomeScreenState extends State<HomeScreen> {
     return _scheduleMap;
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getSchedule().then((value) {
-      setState(() {
-        _scheduleMap = value;
-      });
+  Future<void> updateSchedule() async {
+    final value = await getSchedule();
+    setState(() {
+      _scheduleMap = value;
     });
   }
 
   @override
+  void initState() {
+    super.initState();
+    updateSchedule();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final CollectionReference<ScheduleListModel> schedulesReference = FirebaseFirestore.instance
-        .collection(currentUser!.uid)
-        .withConverter<ScheduleListModel>(
+    final CollectionReference<ScheduleListModel> schedulesReference =
+        FirebaseFirestore.instance
+            .collection(currentUser!.uid)
+            .withConverter<ScheduleListModel>(
       fromFirestore: ((snapshot, _) {
         return ScheduleListModel.fromFireStore(snapshot);
       }),
@@ -159,6 +163,8 @@ class _HomeScreenState extends State<HomeScreen> {
               HomeScheduleList(
                 selectedEvents: _selectedEvents,
                 focusedDay: _focusedDay,
+                updateSchedule: updateSchedule,
+                scheduleMap: _scheduleMap,
               ),
             ],
           );
