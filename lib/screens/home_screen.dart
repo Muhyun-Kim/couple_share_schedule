@@ -20,7 +20,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final currentUser = FirebaseAuth.instance.currentUser;
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  final String currentUserName =
+      FirebaseAuth.instance.currentUser!.displayName!;
 
   /// カレンダーの初期設定
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -34,7 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
   //FireStroeからスケジュール情報を持ってきて,table_calendarライブラリーに適用できるように型変換するfunction
   Future<Map<DateTime, List<String>>> getSchedule() async {
     final schduleListSnapshot = await FirebaseFirestore.instance
-        .collection(currentUser!.uid)
+        .collection(currentUser.uid)
         .orderBy("selectedDate")
         .get();
     final schedule = schduleListSnapshot.docs.map((doc) {
@@ -68,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     final CollectionReference<ScheduleListModel> schedulesReference =
         FirebaseFirestore.instance
-            .collection(currentUser!.uid)
+            .collection(currentUser.uid)
             .withConverter<ScheduleListModel>(
       fromFirestore: ((snapshot, _) {
         return ScheduleListModel.fromFireStore(snapshot);
@@ -77,13 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
         return value.toMap();
       }),
     );
-    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 7, 202, 205),
         elevation: 0.0,
         title: Text(
-          currentUser!.displayName.toString(),
+          currentUserName,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 25,
@@ -173,7 +174,10 @@ class _HomeScreenState extends State<HomeScreen> {
           );
         },
       ),
-      drawer: leftMenu(context),
+      drawer: LeftMenu(
+        currentUser: currentUser,
+        currentUserName: currentUserName,
+      ),
     );
   }
 }
