@@ -1,5 +1,6 @@
 import 'package:couple_share_schedule/widgets/left_menu_widget/change_display_name.dart';
-import 'package:couple_share_schedule/widgets/user_qrcode.dart';
+import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
