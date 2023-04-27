@@ -166,19 +166,21 @@ class _AddScheduleState extends State<AddSchedule> {
                             scheduleInfo: scheduleInfo,
                           );
                           if (scheduleGetInfo == null) {
-                            newDocumentReference.set(newSchedule);
+                            await newDocumentReference.set(newSchedule);
                           } else {
-                            newDocumentReference.update({
+                            await newDocumentReference.update({
                               "scheduleInfo":
                                   FieldValue.arrayUnion(scheduleInfo)
                             });
                           }
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  const HomeScreen(),
-                            ),
-                          );
+                          if (mounted) {
+                            Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    const HomeScreen(),
+                              ),
+                            );
+                          }
                         } else if (_scheduleInput.text != "") {
                           _showAlertDialog(context, "時間を入力してください");
                         } else {

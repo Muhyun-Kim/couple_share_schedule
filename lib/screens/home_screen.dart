@@ -77,6 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return value.toMap();
       }),
     );
+    
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromARGB(255, 7, 202, 205),
@@ -121,52 +122,54 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Builder(
         builder: (context) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TableCalendar(
-                  locale: 'ja_JP',
-                  focusedDay: DateTime.now(),
-                  firstDay: DateTime.utc(2020, 1, 1),
-                  lastDay: DateTime.utc(2030, 12, 31),
-                  calendarFormat: _calendarFormat,
-                  availableCalendarFormats: const {
-                    CalendarFormat.month: '週',
-                    CalendarFormat.week: '月',
-                  },
-                  onFormatChanged: (format) {
-                    setState(
-                      () {
-                        _calendarFormat = format;
-                      },
-                    );
-                  },
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(
-                      () {
-                        _selectedDay = selectedDay;
-                        _focusedDay = focusedDay;
-                        _selectedEvents = _scheduleMap[selectedDay] ?? [];
-                      },
-                    );
-                  },
-                  eventLoader: (date) {
-                    return _scheduleMap[date] ?? [];
-                  },
+          return SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TableCalendar(
+                    locale: 'ja_JP',
+                    focusedDay: DateTime.now(),
+                    firstDay: DateTime.utc(2020, 1, 1),
+                    lastDay: DateTime.utc(2030, 12, 31),
+                    calendarFormat: _calendarFormat,
+                    availableCalendarFormats: const {
+                      CalendarFormat.month: '週',
+                      CalendarFormat.week: '月',
+                    },
+                    onFormatChanged: (format) {
+                      setState(
+                        () {
+                          _calendarFormat = format;
+                        },
+                      );
+                    },
+                    selectedDayPredicate: (day) {
+                      return isSameDay(_selectedDay, day);
+                    },
+                    onDaySelected: (selectedDay, focusedDay) {
+                      setState(
+                        () {
+                          _selectedDay = selectedDay;
+                          _focusedDay = focusedDay;
+                          _selectedEvents = _scheduleMap[selectedDay] ?? [];
+                        },
+                      );
+                    },
+                    eventLoader: (date) {
+                      return _scheduleMap[date] ?? [];
+                    },
+                  ),
                 ),
-              ),
-              HomeScheduleList(
-                selectedEvents: _selectedEvents,
-                focusedDay: _focusedDay,
-                updateSchedule: updateSchedule,
-                scheduleMap: _scheduleMap,
-              ),
-            ],
+                HomeScheduleList(
+                  selectedEvents: _selectedEvents,
+                  focusedDay: _focusedDay,
+                  updateSchedule: updateSchedule,
+                  scheduleMap: _scheduleMap,
+                ),
+              ],
+            ),
           );
         },
       ),
