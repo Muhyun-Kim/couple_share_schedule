@@ -1,22 +1,28 @@
-import 'package:couple_share_schedule/widgets/left_menu_widget/change_display_name.dart';
-import 'package:couple_share_schedule/widgets/user_qrcode.dart';
+import 'package:couple_share_schedule/provider/user_provider.dart';
+import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class LeftMenu extends StatefulWidget {
-  const LeftMenu(
-      {super.key, required this.currentUser, required this.currentUserName});
+class LeftMenu extends ConsumerStatefulWidget {
+  const LeftMenu({super.key, required this.currentUser});
 
   final User currentUser;
-  final String currentUserName;
 
   @override
-  State<LeftMenu> createState() => _LeftMenuState();
+  ConsumerState<LeftMenu> createState() => _LeftMenuState();
 }
 
-class _LeftMenuState extends State<LeftMenu> {
+class _LeftMenuState extends ConsumerState<LeftMenu> {
   @override
   Widget build(BuildContext context) {
+    String currentUserName;
+    if (ref.watch(currentUserProvider) == null) {
+      currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "";
+    } else {
+      currentUserName = ref.watch(currentUserProvider)!.displayName ?? "";
+    }
+    final TextEditingController displayNameInput = TextEditingController();
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -49,10 +55,51 @@ class _LeftMenuState extends State<LeftMenu> {
             },
           ),
           ListTile(
-            title: Text(widget.currentUserName),
+            title: Text(currentUserName),
             onTap: () {
-              changeDisplayName(
-                  context, widget.currentUser, widget.currentUserName);
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: const Text('ユーザー名を変更しますか？'),
+                    content: const Text(""),
+                    actions: <Widget>[
+                      TextField(
+                        controller: displayNameInput,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: currentUserName,
+                        ),
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          textStyle: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        child: const Text('キャンセル'),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        style: TextButton.styleFrom(
+                          textStyle: Theme.of(context).textTheme.labelLarge,
+                        ),
+                        child: const Text('変更'),
+                        onPressed: () async {
+                          Navigator.of(context).pop();
+                          await widget.currentUser
+                              .updateDisplayName(displayNameInput.text);
+                          final User user = FirebaseAuth.instance.currentUser!;
+                          final userProvider =
+                              ref.read(currentUserProvider.notifier);
+
+                          userProvider.setUser(user);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
             },
           ),
           const ListTile(

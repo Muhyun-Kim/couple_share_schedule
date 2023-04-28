@@ -4,25 +4,25 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
+import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/home_widget/home_schedule_list.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
 import 'package:couple_share_schedule/widgets/partner_widget/partner_wrapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  ConsumerState<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends ConsumerState<HomeScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
-  final String currentUserName =
-      FirebaseAuth.instance.currentUser!.displayName!;
 
   /// カレンダーの初期設定
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -68,6 +68,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String currentUserName;
+    if (ref.watch(currentUserProvider) == null) {
+      currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "";
+    } else {
+      currentUserName = ref.watch(currentUserProvider)!.displayName ?? "";
+    }
+
     final CollectionReference<ScheduleListModel> schedulesReference =
         FirebaseFirestore.instance
             .collection(currentUser.uid)
@@ -176,7 +183,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       drawer: LeftMenu(
         currentUser: currentUser,
-        currentUserName: currentUserName,
       ),
     );
   }
