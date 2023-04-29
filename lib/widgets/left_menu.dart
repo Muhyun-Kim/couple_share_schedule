@@ -1,4 +1,5 @@
 import 'package:couple_share_schedule/provider/user_provider.dart';
+import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,14 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
     } else {
       currentUserName = ref.watch(currentUserProvider)!.displayName ?? "";
     }
+
+    String currentUserPhotoURL;
+    if (ref.watch(currentUserProvider) == null) {
+      currentUserPhotoURL = FirebaseAuth.instance.currentUser!.photoURL ?? "";
+    } else {
+      currentUserPhotoURL = ref.watch(currentUserProvider)!.photoURL ?? "";
+    }
+
     final TextEditingController displayNameInput = TextEditingController();
     return Drawer(
       child: ListView(
@@ -34,12 +43,22 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                 bottomLeft: Radius.circular(7),
               ),
             ),
-            child: Column(
-              children: [
-                Image(
-                  image: NetworkImage(widget.currentUser.photoURL ?? ""),
-                ),
-              ],
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const FullImageScreen(),
+                  ),
+                );
+              },
+              child: Column(
+                children: [
+                  Image(
+                    image: NetworkImage(currentUserPhotoURL),
+                  ),
+                ],
+              ),
             ),
           ),
           ListTile(
