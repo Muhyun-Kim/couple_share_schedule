@@ -20,4 +20,8 @@ class AuthState extends StateNotifier<User?> {
   String getCurrentUserPhotoURL() {
     return state?.photoURL ?? "";
   }
+
+  String getCurrentUserUid() {
+    return state?.uid ?? "";
+  }
 }

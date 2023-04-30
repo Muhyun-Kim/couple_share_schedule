@@ -23,6 +23,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
+  final currentUserPhotoURL = FirebaseAuth.instance.currentUser!.photoURL ?? "";
 
   /// カレンダーの初期設定
   CalendarFormat _calendarFormat = CalendarFormat.month;

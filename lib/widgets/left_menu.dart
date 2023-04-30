@@ -108,10 +108,9 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                           Navigator.of(context).pop();
                           await widget.currentUser
                               .updateDisplayName(displayNameInput.text);
-                          final User user = FirebaseAuth.instance.currentUser!;
+                          final user = FirebaseAuth.instance.currentUser!;
                           final userProvider =
                               ref.read(currentUserProvider.notifier);
-
                           userProvider.setUser(user);
                         },
                       ),
