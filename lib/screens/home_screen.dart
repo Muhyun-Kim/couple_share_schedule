@@ -139,7 +139,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: TableCalendar(
                     locale: 'ja_JP',
-                    focusedDay: DateTime.now(),
+                    focusedDay: _focusedDay,
                     firstDay: DateTime.utc(2020, 1, 1),
                     lastDay: DateTime.utc(2030, 12, 31),
                     calendarFormat: _calendarFormat,
@@ -154,6 +154,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         },
                       );
                     },
+                    onPageChanged: (focusedDay) {},
                     selectedDayPredicate: (day) {
                       return isSameDay(_selectedDay, day);
                     },
