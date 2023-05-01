@@ -54,8 +54,12 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
               },
               child: Column(
                 children: [
-                  Image(
-                    image: NetworkImage(currentUserPhotoURL),
+                  SizedBox(
+                    width: 100,
+                    height: 100,
+                    child: Image(
+                      image: NetworkImage(currentUserPhotoURL),
+                    ),
                   ),
                 ],
               ),
