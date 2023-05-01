@@ -29,11 +29,8 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      // 画像がnullの場合戻る
       if (image == null) return;
-
       final imageTemp = File(image.path);
-
       setState(() => this.image = imageTemp);
     } on PlatformException catch (e) {
       print('Failed to pick image: $e');
@@ -75,9 +72,6 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
       appBar: AppBar(
         actions: [
           TextButton(
-            onPressed: () {
-              pickImage();
-            },
             child: const Text(
               "編集",
               style: TextStyle(
@@ -85,16 +79,33 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
                 fontSize: 20.0,
               ),
             ),
+            onPressed: () {
+              pickImage();
+            },
           ),
           if (image != null)
             TextButton(
-              onPressed: () {
-                uploadImageToStorage(context);
-              },
               child: const Text(
                 "決定",
-                style: TextStyle(color: Colors.white, fontSize: 20.0),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20.0,
+                ),
               ),
+              onPressed: () async {
+                await uploadImageToStorage(context);
+                if (mounted) {
+                  final chagedUserImg = await profileImgRef.getDownloadURL();
+                  await FirebaseAuth.instance.currentUser!
+                      .updatePhotoURL(chagedUserImg);
+                  if (mounted) {
+                    Navigator.pop(context);
+                    final user = FirebaseAuth.instance.currentUser!;
+                    final userProvider = ref.read(currentUserProvider.notifier);
+                    userProvider.setUser(user);
+                  }
+                }
+              },
             ),
         ],
       ),
@@ -105,7 +116,9 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
         child: Center(
           child: image != null
               ? Image.file(image!)
-              : const Text("No image selected"),
+              : Image(
+                  image: NetworkImage(currentUserPhotoURL),
+                ),
         ),
       ),
     );
