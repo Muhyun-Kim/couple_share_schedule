@@ -64,7 +64,7 @@ class _PartnerMainScreenBodyState extends State<PartnerMainScreenBody> {
                 padding: const EdgeInsets.all(8.0),
                 child: TableCalendar(
                   locale: 'ja_JP',
-                  focusedDay: DateTime.now(),
+                  focusedDay: _focusedDay,
                   firstDay: DateTime.utc(2020, 1, 1),
                   lastDay: DateTime.utc(2030, 12, 31),
                   calendarFormat: _calendarFormat,
