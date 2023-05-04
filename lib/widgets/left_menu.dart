@@ -124,9 +124,6 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
               );
             },
           ),
-          const ListTile(
-            title: Text("利用規約"),
-          ),
           ListTile(
             title: const Text("ログアウト"),
             onTap: () => FirebaseAuth.instance.signOut(),
