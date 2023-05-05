@@ -4,6 +4,7 @@ import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart'
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LeftMenu extends ConsumerStatefulWidget {
   const LeftMenu({super.key, required this.currentUser});
@@ -15,6 +16,16 @@ class LeftMenu extends ConsumerStatefulWidget {
 }
 
 class _LeftMenuState extends ConsumerState<LeftMenu> {
+  void _opnePrivacyPolicy() async {
+    Uri url = Uri.parse(
+        'https://muhyun-kim.github.io/couple_share_schedule_privacy/privacy_jp.html');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'このURLにはアクセスできません';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String currentUserName;
@@ -123,6 +134,10 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                 },
               );
             },
+          ),
+          ListTile(
+            title: Text("利用規約"),
+            onTap: _opnePrivacyPolicy,
           ),
           ListTile(
             title: const Text("ログアウト"),
