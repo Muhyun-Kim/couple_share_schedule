@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>7753173160-idtf577vji9puhdiu1068id5l50i262a.apps.googleusercontent.com</string>
+	<string>7753173160-makilf9png2bqabcrst49l8vqn445560.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.7753173160-idtf577vji9puhdiu1068id5l50i262a</string>
+	<string>com.googleusercontent.apps.7753173160-makilf9png2bqabcrst49l8vqn445560</string>
 	<key>API_KEY</key>
 	<string>AIzaSyAH9BVhye9Up6-oO0jrkHMNPbmLAwBB6Pk</string>
 	<key>GCM_SENDER_ID</key>
@@ -13,7 +13,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.coupleShareSchedule</string>
+	<string>com.muhyun.coupleShareSchedule</string>
 	<key>PROJECT_ID</key>
 	<string>coupleshareschedule</string>
 	<key>STORAGE_BUCKET</key>
@@ -29,6 +29,8 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:7753173160:ios:93d83c3fffd9718109da9d</string>
+	<string>1:7753173160:ios:a85c18643e6ba43909da9d</string>
+	<key>DATABASE_URL</key>
+	<string>https://coupleshareschedule-default-rtdb.asia-southeast1.firebasedatabase.app</string>
 </dict>
 </plist>

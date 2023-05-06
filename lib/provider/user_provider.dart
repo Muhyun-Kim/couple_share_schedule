@@ -1,3 +1,7 @@
+//Author : muhyun-kim
+//Modified : 2023/05/06
+//Function : ログイン状態の時、最初表示される画面
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,7 +18,7 @@ class AuthState extends StateNotifier<User?> {
   }
 
   String getCurrentUserName() {
-    return state?.displayName ?? "";
+    return state?.displayName ?? "ゲスト";
   }
 
   String getCurrentUserPhotoURL() {

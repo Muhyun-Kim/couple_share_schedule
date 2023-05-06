@@ -1,5 +1,5 @@
 //Author : muhyun-kim
-//Modified : 2023/04/22
+//Modified : 2023/05/06
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -23,7 +23,6 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final currentUser = FirebaseAuth.instance.currentUser!;
-  final currentUserPhotoURL = FirebaseAuth.instance.currentUser!.photoURL ?? "";
 
   /// カレンダーの初期設定
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -61,19 +60,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
+  Future<void> setUserInitialValue() async {
+    await currentUser.updateDisplayName("ゲスト");
+    await currentUser.updatePhotoURL(
+        "https://firebasestorage.googleapis.com/v0/b/coupleshareschedule.appspot.com/o/profileImg%2Fguest.png?alt=media&token=65859ba3-3aea-470c-9e21-b3bcc32c4a1b");
+  }
+
   @override
   void initState() {
     super.initState();
     updateSchedule();
+    if (FirebaseAuth.instance.currentUser!.displayName == null ||
+        FirebaseAuth.instance.currentUser!.photoURL == null) {
+      setUserInitialValue();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     String currentUserName;
     if (ref.watch(currentUserProvider) == null) {
-      currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "";
+      currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "ゲスト";
     } else {
-      currentUserName = ref.watch(currentUserProvider)!.displayName ?? "";
+      currentUserName = ref.watch(currentUserProvider)!.displayName ?? "ゲスト";
     }
 
     final CollectionReference<ScheduleListModel> schedulesReference =
