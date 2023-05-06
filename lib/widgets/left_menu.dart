@@ -43,6 +43,8 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
     }
 
     final TextEditingController displayNameInput = TextEditingController();
+    final TextEditingController deleteAccountInput = TextEditingController();
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -105,29 +107,34 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                           labelText: currentUserName,
                         ),
                       ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          textStyle: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        child: const Text('キャンセル'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                      ),
-                      TextButton(
-                        style: TextButton.styleFrom(
-                          textStyle: Theme.of(context).textTheme.labelLarge,
-                        ),
-                        child: const Text('変更'),
-                        onPressed: () async {
-                          Navigator.of(context).pop();
-                          await widget.currentUser
-                              .updateDisplayName(displayNameInput.text);
-                          final user = FirebaseAuth.instance.currentUser!;
-                          final userProvider =
-                              ref.read(currentUserProvider.notifier);
-                          userProvider.setUser(user);
-                        },
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              textStyle: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            child: const Text('変更'),
+                            onPressed: () async {
+                              Navigator.of(context).pop();
+                              await widget.currentUser
+                                  .updateDisplayName(displayNameInput.text);
+                              final user = FirebaseAuth.instance.currentUser!;
+                              final userProvider =
+                                  ref.read(currentUserProvider.notifier);
+                              userProvider.setUser(user);
+                            },
+                          ),
+                          TextButton(
+                            style: TextButton.styleFrom(
+                              textStyle: Theme.of(context).textTheme.labelLarge,
+                            ),
+                            child: const Text('キャンセル'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   );
@@ -143,6 +150,52 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
             title: const Text("ログアウト"),
             onTap: () => FirebaseAuth.instance.signOut(),
           ),
+          ListTile(
+            title: const Text("アカウント削除"),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("アカウントを削除確？"),
+                    content: Text(
+                        "アカウントを削除すると、すべてのデータが削除されます。削除するなら、「削除」と入力してください。"),
+                    actions: <Widget>[
+                      TextField(
+                        controller: deleteAccountInput,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: "削除",
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          TextButton(
+                            onPressed: () async {
+                              if (deleteAccountInput.text == "削除") {
+                                await widget.currentUser.delete();
+                                Navigator.of(context).pop();
+                              } else {
+                                Navigator.of(context).pop();
+                              }
+                            },
+                            child: Text("確認"),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(context).pop(false);
+                            },
+                            child: Text("キャンセル"),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              );
+            },
+          )
         ],
       ),
     );

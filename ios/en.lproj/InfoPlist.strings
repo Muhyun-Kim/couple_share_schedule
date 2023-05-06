@@ -5,3 +5,5 @@
   Created by 김무현 on 2023/05/03.
   
 */
+
+CFBundleDisplayName = "pair schedule";
