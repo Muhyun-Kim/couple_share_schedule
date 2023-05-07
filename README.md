@@ -1,16 +1,29 @@
-# couple_share_schedule
+# プロジェクト名（アプリ名）
 
-A new Flutter project.
+ペアスケジュール
 
-## Getting Started
+## プロジェクト説明
 
-This project is a starting point for a Flutter application.
+二人同士で使用するスケジュール共有アプリ
 
-A few resources to get you started if this is your first Flutter project:
+## 何故作ったのか
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+同棲している環境で互いの時間調整を楽にしたいと思った。
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 使用技術
+
+- Flutter
+
+- Firebase(Authentication, Firebase Database, Storage)
+
+## 苦労したポイント
+
+- Firebaseからデータを持ってきて、外部パッケージに合わせること
+
+## 今後の改善点
+
+- パートナー追加機能のUX改善
+
+- Firebaseデータ管理の効率化
+
+- コードの可読性
