@@ -1,4 +1,5 @@
 import 'package:couple_share_schedule/provider/user_provider.dart';
+import 'package:couple_share_schedule/screens/login_screen.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class LeftMenu extends ConsumerStatefulWidget {
-  const LeftMenu({super.key, required this.currentUser});
+  LeftMenu({super.key, required this.currentUser});
 
-  final User currentUser;
+  User? currentUser;
 
   @override
   ConsumerState<LeftMenu> createState() => _LeftMenuState();
@@ -79,7 +80,7 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
             ),
           ),
           ListTile(
-            title: Text("ID: ${widget.currentUser.uid}"),
+            title: Text("ID: ${widget.currentUser!.uid}"),
             onTap: () {
               showModalBottomSheet(
                 isScrollControlled: true,
@@ -117,7 +118,7 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                             child: const Text('変更'),
                             onPressed: () async {
                               Navigator.of(context).pop();
-                              await widget.currentUser
+                              await widget.currentUser!
                                   .updateDisplayName(displayNameInput.text);
                               final user = FirebaseAuth.instance.currentUser!;
                               final userProvider =
@@ -174,8 +175,14 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                           TextButton(
                             onPressed: () async {
                               if (deleteAccountInput.text == "削除") {
-                                await widget.currentUser.delete();
-                                Navigator.of(context).pop();
+                                await widget.currentUser!.delete();
+                                widget.currentUser = null;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => LoginScreen(),
+                                  ),
+                                );
                               } else {
                                 Navigator.of(context).pop();
                               }

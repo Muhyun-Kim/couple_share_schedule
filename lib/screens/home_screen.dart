@@ -22,7 +22,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
-  final currentUser = FirebaseAuth.instance.currentUser!;
+  final currentUser = FirebaseAuth.instance.currentUser;
 
   /// カレンダーの初期設定
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -36,7 +36,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   //FireStroeからスケジュール情報を持ってきて,table_calendarライブラリーに適用できるように型変換するfunction
   Future<Map<DateTime, List<String>>> getSchedule() async {
     final schduleListSnapshot = await FirebaseFirestore.instance
-        .collection(currentUser.uid)
+        .collection(currentUser!.uid)
         .orderBy("selectedDate")
         .get();
     final schedule = schduleListSnapshot.docs.map((doc) {
@@ -61,8 +61,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 
   Future<void> setUserInitialValue() async {
-    await currentUser.updateDisplayName("ゲスト");
-    await currentUser.updatePhotoURL(
+    await currentUser!.updateDisplayName("ゲスト");
+    await currentUser!.updatePhotoURL(
         "https://firebasestorage.googleapis.com/v0/b/coupleshareschedule.appspot.com/o/profileImg%2Fguest.png?alt=media&token=65859ba3-3aea-470c-9e21-b3bcc32c4a1b");
   }
 
@@ -87,7 +87,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
     final CollectionReference<ScheduleListModel> schedulesReference =
         FirebaseFirestore.instance
-            .collection(currentUser.uid)
+            .collection(currentUser!.uid)
             .withConverter<ScheduleListModel>(
       fromFirestore: ((snapshot, _) {
         return ScheduleListModel.fromFireStore(snapshot);

@@ -2,8 +2,6 @@
 //Modified : 2023/05/06
 //Function : ログイン状態の時、最初表示される画面
 
-import 'dart:io';
-
 import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -73,13 +71,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         userProvider.setUser(user);
                       },
                     ),
-                    if (Platform.isIOS)
-                      SignInButton(
-                        Buttons.Apple,
-                        onPressed: () async {
-                          await signInWithApple();
-                        },
-                      ),
+                    SignInButton(
+                      Buttons.Apple,
+                      onPressed: () async {
+                        await signInWithApple();
+                      },
+                    ),
                   ],
                 ),
               ),
