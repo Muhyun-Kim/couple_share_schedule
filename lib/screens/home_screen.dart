@@ -5,6 +5,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/provider/user_provider.dart';
+import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/home_widget/home_schedule_list.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
@@ -98,13 +99,17 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     );
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color.fromARGB(255, 7, 202, 205),
+        backgroundColor: Color(0xFFC3E99D),
         elevation: 0.0,
+        iconTheme: IconThemeData(
+          color: Color.fromARGB(255, 17, 20, 17),
+        ),
         title: Text(
           currentUserName,
           style: const TextStyle(
-            fontWeight: FontWeight.bold,
+            color: Color.fromARGB(255, 7, 8, 7),
             fontSize: 25,
+            fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
@@ -133,9 +138,24 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               );
             },
             icon: const Icon(
-              Icons.favorite,
+              Icons.person_add_outlined,
             ),
           ),
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MobileScannerScreen(
+                    partnerUid: "QRコード取得",
+                  ),
+                ),
+              );
+            },
+            icon: Icon(
+              Icons.favorite,
+            ),
+          )
         ],
       ),
       body: Builder(
