@@ -5,11 +5,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/provider/user_provider.dart';
+import 'package:couple_share_schedule/screens/loading_screen.dart';
 import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
+import 'package:couple_share_schedule/screens/partner_main_screen.dart';
 import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/home_widget/home_schedule_list.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
-import 'package:couple_share_schedule/widgets/partner_widget/partner_wrapper.dart';
+import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -77,8 +80,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     }
   }
 
+  final partnerStream =
+      FirebaseFirestore.instance.collection(userUid).doc("partner").snapshots();
+
   @override
   Widget build(BuildContext context) {
+    var partnerInfo;
     String currentUserName;
     if (ref.watch(currentUserProvider) == null) {
       currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "ゲスト";
@@ -97,124 +104,152 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return value.toMap();
       }),
     );
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFC3E99D),
-        elevation: 0.0,
-        iconTheme: IconThemeData(
-          color: Color.fromARGB(255, 17, 20, 17),
-        ),
-        title: Text(
-          currentUserName,
-          style: const TextStyle(
-            color: Color.fromARGB(255, 7, 8, 7),
-            fontSize: 25,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        actions: [
-          IconButton(
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                isScrollControlled: true,
-                builder: (BuildContext context) {
-                  return AddSchedule(
-                    focusedDay: _focusedDay,
-                    schedulesReference: schedulesReference,
-                  );
-                },
-              );
-            },
-            icon: const Icon(Icons.add),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const PartnerWrapper(),
-                ),
-              );
-            },
-            icon: const Icon(
-              Icons.person_add_outlined,
-            ),
-          ),
-          IconButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => MobileScannerScreen(
-                    partnerUid: "QRコード取得",
-                  ),
-                ),
-              );
-            },
-            icon: Icon(
-              Icons.favorite,
-            ),
-          )
-        ],
-      ),
-      body: Builder(
-        builder: (context) {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TableCalendar(
-                    locale: 'ja_JP',
-                    focusedDay: _focusedDay,
-                    firstDay: DateTime.utc(2020, 1, 1),
-                    lastDay: DateTime.utc(2030, 12, 31),
-                    calendarFormat: _calendarFormat,
-                    availableCalendarFormats: const {
-                      CalendarFormat.month: '週',
-                      CalendarFormat.week: '月',
-                    },
-                    onFormatChanged: (format) {
-                      setState(
-                        () {
-                          _calendarFormat = format;
-                        },
-                      );
-                    },
-                    onPageChanged: (focusedDay) {},
-                    selectedDayPredicate: (day) {
-                      return isSameDay(_selectedDay, day);
-                    },
-                    onDaySelected: (selectedDay, focusedDay) {
-                      setState(
-                        () {
-                          _selectedDay = selectedDay;
-                          _focusedDay = focusedDay;
-                          _selectedEvents = _scheduleMap[selectedDay] ?? [];
-                        },
-                      );
-                    },
-                    eventLoader: (date) {
-                      return _scheduleMap[date] ?? [];
-                    },
-                  ),
-                ),
-                HomeScheduleList(
-                  selectedEvents: _selectedEvents,
-                  focusedDay: _focusedDay,
-                  updateSchedule: updateSchedule,
-                  scheduleMap: _scheduleMap,
-                ),
-              ],
+
+    //Icon button 定義
+    IconButton _buildQrCodeIconButton(BuildContext context) {
+      return IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MobileScannerScreen(
+                partnerUid: "",
+              ),
             ),
           );
         },
-      ),
-      drawer: LeftMenu(
-        currentUser: currentUser,
-      ),
+        icon: const Icon(
+          Icons.person_add_outlined,
+        ),
+      );
+    }
+
+    IconButton _buildPartnerIconButton(BuildContext context) {
+      return IconButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => PartnerMainScreen(
+                partnerInfo: partnerInfo,
+              ),
+            ),
+          );
+        },
+        icon: Icon(
+          Icons.people_outlined,
+        ),
+      );
+    }
+
+    return StreamBuilder(
+      stream: partnerStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const LoadingScreen();
+        } else {
+          if (snapshot.data?.data() != null) {
+            partnerInfo = snapshot.data?.data() as Map<String, dynamic>;
+          } else {
+            partnerInfo = null;
+          }
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Color(0xFFC3E99D),
+              elevation: 0.0,
+              iconTheme: IconThemeData(
+                color: Color.fromARGB(255, 17, 20, 17),
+              ),
+              title: Text(
+                currentUserName,
+                style: const TextStyle(
+                  color: Color.fromARGB(255, 7, 8, 7),
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      builder: (BuildContext context) {
+                        return AddSchedule(
+                          focusedDay: _focusedDay,
+                          schedulesReference: schedulesReference,
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.add),
+                ),
+                partnerInfo == null
+                    ? _buildQrCodeIconButton(context)
+                    : _buildPartnerIconButton(context),
+              ],
+            ),
+            body: Builder(
+              builder: (context) {
+                return SingleChildScrollView(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TableCalendar(
+                          locale: 'ja_JP',
+                          focusedDay: _focusedDay,
+                          firstDay: DateTime.utc(2020, 1, 1),
+                          lastDay: DateTime.utc(2030, 12, 31),
+                          calendarFormat: _calendarFormat,
+                          availableCalendarFormats: const {
+                            CalendarFormat.month: '週',
+                            CalendarFormat.week: '月',
+                          },
+                          onFormatChanged: (format) {
+                            setState(
+                              () {
+                                _calendarFormat = format;
+                              },
+                            );
+                          },
+                          onPageChanged: (focusedDay) {},
+                          selectedDayPredicate: (day) {
+                            return isSameDay(_selectedDay, day);
+                          },
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(
+                              () {
+                                _selectedDay = selectedDay;
+                                _focusedDay = focusedDay;
+                                _selectedEvents =
+                                    _scheduleMap[selectedDay] ?? [];
+                              },
+                            );
+                          },
+                          eventLoader: (date) {
+                            return _scheduleMap[date] ?? [];
+                          },
+                        ),
+                      ),
+                      HomeScheduleList(
+                        selectedEvents: _selectedEvents,
+                        focusedDay: _focusedDay,
+                        updateSchedule: updateSchedule,
+                        scheduleMap: _scheduleMap,
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            drawer: LeftMenu(
+              currentUser: currentUser,
+            ),
+          );
+        }
+      },
     );
   }
 }
