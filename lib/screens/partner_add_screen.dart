@@ -1,33 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
-import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class PartnerAddScreen extends StatefulWidget {
-  String partnerUid;
-  PartnerAddScreen({Key? key, required this.partnerUid}) : super(key: key);
+class PartnerAddScreen extends ConsumerStatefulWidget {
+  final String partnerUid;
+  PartnerAddScreen({Key? key, required this.partnerUid});
 
   @override
-  State<PartnerAddScreen> createState() => _PartnerAddScreenState();
+  ConsumerState<PartnerAddScreen> createState() => _PartnerAddScreenState();
 }
 
-class _PartnerAddScreenState extends State<PartnerAddScreen> {
-  String _partnerUid = "UIDを読み取る";
+class _PartnerAddScreenState extends ConsumerState<PartnerAddScreen> {
+  var _partnerUid;
   final TextEditingController _partnerNameInput = TextEditingController();
   final userId = FirebaseAuth.instance.currentUser!.uid;
-
-  Widget buildPartnerTextField(
-      TextEditingController controller, String hintText) {
-    return TextField(
-      controller: controller,
-      textAlign: TextAlign.center,
-      decoration: InputDecoration(
-        border: InputBorder.none,
-        hintText: hintText,
-      ),
-    );
-  }
 
   @override
   void initState() {
@@ -37,45 +25,64 @@ class _PartnerAddScreenState extends State<PartnerAddScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserUid = FirebaseAuth.instance.currentUser!.uid;
+
     return Scaffold(
+      appBar: AppBar(
+        iconTheme: IconThemeData(
+          color: Color.fromARGB(255, 17, 22, 17),
+        ),
+        backgroundColor: Color(0xFFC3E99D),
+        title: Text(
+          "パートナー追加",
+          style: const TextStyle(
+            color: Color.fromARGB(255, 57, 67, 57),
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text("パートナーを追加してください。"),
-            const SizedBox(
-              height: 50,
-              width: 50,
-            ),
             Column(
               children: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MobileScannerScreen(
-                          partnerUid: _partnerUid,
-                        ),
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Color(0xFFC3E99D),
+                      width: 2,
+                    ),
+                  ),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    child: TextField(
+                      controller: _partnerNameInput,
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
                       ),
-                    );
-                  },
-                  child: Text(_partnerUid),
+                      decoration: InputDecoration(
+                        hintText: "お名前",
+                      ),
+                    ),
+                  ),
                 ),
-                buildPartnerTextField(
-                  _partnerNameInput,
-                  "パートナーの名前を入力してください。",
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
                 ),
                 ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color(0xFFC3E99D),
+                  ),
                   onPressed: () async {
-                    final partnerUid = _partnerUid;
-                    final partnerName = _partnerNameInput.text;
                     await FirebaseFirestore.instance
-                        .collection(userId)
+                        .collection(currentUserUid)
                         .doc("partner")
                         .set({
-                      "partnerUid": partnerUid,
-                      "partnerName": partnerName,
+                      "partnerUid": _partnerUid,
+                      "partnerName": _partnerNameInput.text,
                     });
                     if (!mounted) return;
                     Navigator.push(
@@ -85,7 +92,10 @@ class _PartnerAddScreenState extends State<PartnerAddScreen> {
                       ),
                     );
                   },
-                  child: const Text("追加"),
+                  child: const Text(
+                    "追加",
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ),
                 ),
               ],
             ),

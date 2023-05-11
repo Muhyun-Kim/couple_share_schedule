@@ -8,15 +8,42 @@ class UserQRCode extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
-
-    return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.8,
-      child: Center(
-        child: QrImage(
-          data: userId,
-          version: QrVersions.auto,
-          size: 200.0,
-        ),
+    
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.7,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        children: [
+          Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.cancel_outlined,
+                    color: Color.fromARGB(255, 129, 129, 129),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.5,
+            child: Center(
+              child: QrImage(
+                data: userId,
+                version: QrVersions.auto,
+                size: 200.0,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:couple_share_schedule/screens/partner_add_screen.dart';
+import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -10,88 +11,106 @@ class MobileScannerScreen extends StatefulWidget {
 }
 
 class _MobileScannerScreenState extends State<MobileScannerScreen> {
-  MobileScannerController cameraController = MobileScannerController();
-  bool _isCapturing = true; // Added state variable to control capture
+  bool _isCapturing = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mobile Scanner'),
-        actions: [
-          IconButton(
-            color: Colors.white,
-            icon: ValueListenableBuilder(
-              valueListenable: cameraController.torchState,
-              builder: (context, state, child) {
-                switch (state) {
-                  case TorchState.off:
-                    return const Icon(Icons.flash_off, color: Colors.grey);
-                  case TorchState.on:
-                    return const Icon(Icons.flash_on, color: Colors.yellow);
-                }
-              },
-            ),
-            iconSize: 32.0,
-            onPressed: () => cameraController.toggleTorch(),
+      ),
+      body: Column(
+        children: [
+          SizedBox(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: _isCapturing
+                ? MobileScanner(
+                    onDetect: (capture) {
+                      final List<Barcode> barcodes = capture.barcodes;
+                      if (barcodes.isNotEmpty) {
+                        setState(() {
+                          _isCapturing = false;
+                        });
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Barcode found!'),
+                            content: Text(barcodes.first.rawValue!),
+                            actions: [
+                              TextButton(
+                                child: const Text('OK'),
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => PartnerAddScreen(
+                                        partnerUid: barcodes.first.rawValue!,
+                                      ),
+                                    ),
+                                  );
+                                  setState(() {
+                                    _isCapturing = true;
+                                  });
+                                },
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  )
+                : const Center(child: CircularProgressIndicator()),
           ),
-          IconButton(
-            color: Colors.white,
-            icon: ValueListenableBuilder(
-              valueListenable: cameraController.cameraFacingState,
-              builder: (context, state, child) {
-                switch (state) {
-                  case CameraFacing.front:
-                    return const Icon(Icons.camera_front);
-                  case CameraFacing.back:
-                    return const Icon(Icons.camera_rear);
-                }
+          SizedBox(
+            child: TextButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25.0),
+                  ),
+                  context: context,
+                  builder: (BuildContext buildContext) {
+                    return const UserQRCode();
+                  },
+                );
               },
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.qr_code_outlined,
+                      ),
+                      SizedBox(width: 7),
+                      Text(
+                        "QRコード表示",
+                        style: const TextStyle(
+                          fontSize: 15,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  Container(
+                    child: Center(
+                      child: Text(
+                        "QRコードをスキャンしてペアを追加できます。",
+                        style: TextStyle(
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
             ),
-            iconSize: 32.0,
-            onPressed: () => cameraController.switchCamera(),
           ),
         ],
       ),
-      body: _isCapturing // Conditional widget
-          ? MobileScanner(
-              controller: cameraController,
-              onDetect: (capture) {
-                final List<Barcode> barcodes = capture.barcodes;
-                if (barcodes.isNotEmpty) {
-                  // Stop capturing if barcode is found
-                  setState(() {
-                    _isCapturing = false;
-                  });
-                  showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                      title: const Text('Barcode found!'),
-                      content: Text(barcodes.first.rawValue!),
-                      actions: [
-                        TextButton(
-                          child: const Text('OK'),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>  PartnerAddScreen(
-                                        partnerUid: barcodes.first.rawValue!,
-                                ),
-                              ),
-                            );
-                            setState(() {
-                              _isCapturing = true;
-                            });
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                }
-              },
-            )
-          : const Center(child: CircularProgressIndicator()),
     );
   }
 }
