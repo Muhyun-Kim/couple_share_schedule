@@ -7,6 +7,7 @@ import 'package:couple_share_schedule/widgets/ui_widget/login_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -69,11 +70,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         fit: BoxFit.contain,
                       ),
                     ),
-                    const SizedBox(
+                    SizedBox(
                       height: 60,
                       child: Text(
                         "ログインして始める",
-                        style: TextStyle(
+                        style: GoogleFonts.sawarabiGothic(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
                         ),

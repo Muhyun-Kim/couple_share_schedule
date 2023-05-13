@@ -70,6 +70,17 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          icon: const Icon(
+            Icons.cancel,
+            color: Color.fromARGB(255, 103, 103, 103),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         actions: [
           TextButton(
             child: const Text(
@@ -109,16 +120,19 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
             ),
         ],
       ),
-      body: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
+      body: Container(
+        color: Colors.black,
         child: Center(
-          child: image != null
-              ? Image.file(image!)
-              : Image(
-                  image: NetworkImage(currentUserPhotoURL),
-                ),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            child: image != null
+                ? Image.file(
+                    image!,
+                  )
+                : Image(
+                    image: NetworkImage(currentUserPhotoURL),
+                  ),
+          ),
         ),
       ),
     );
