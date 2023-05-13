@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "7753173160",
+    "firebase_url": "https://coupleshareschedule-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "coupleshareschedule",
     "storage_bucket": "coupleshareschedule.appspot.com"
   },
@@ -9,12 +10,12 @@
       "client_info": {
         "mobilesdk_app_id": "1:7753173160:android:547b51a2daffb39509da9d",
         "android_client_info": {
-          "package_name": "com.example.couple_share_schedule"
+          "package_name": "com.muhyun.coupleShareSchedule"
         }
       },
       "oauth_client": [
         {
-          "client_id": "7753173160-mo33icuc72uhqnbgvu1c90rv2caaooh0.apps.googleusercontent.com",
+          "client_id": "7753173160-75f9gfda1sk5hh0tgbu2mm63hfb8pu8g.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +28,51 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "7753173160-mo33icuc72uhqnbgvu1c90rv2caaooh0.apps.googleusercontent.com",
+              "client_id": "7753173160-75f9gfda1sk5hh0tgbu2mm63hfb8pu8g.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "7753173160-idtf577vji9puhdiu1068id5l50i262a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.coupleShareSchedule"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:7753173160:android:23dd9b2d966d209a09da9d",
+        "android_client_info": {
+          "package_name": "com.muhyun.coupleShareSchedule"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "7753173160-75f9gfda1sk5hh0tgbu2mm63hfb8pu8g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaf-cIngHsRUGI65Nu1wL8dSct_SkgALs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "7753173160-75f9gfda1sk5hh0tgbu2mm63hfb8pu8g.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "7753173160-idtf577vji9puhdiu1068id5l50i262a.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.coupleShareSchedule"
+              }
             }
           ]
         }

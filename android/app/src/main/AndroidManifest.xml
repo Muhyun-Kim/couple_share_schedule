@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.couple_share_schedule">
+    package="com.muhyun.coupleShareSchedule">
    <application
-        android:label="couple_share_schedule"
+        android:label="ペアスケジュール"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

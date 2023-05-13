@@ -1,4 +1,4 @@
-package com.example.couple_share_schedule
+package com.muhyun.coupleShareSchedule
 
 import io.flutter.embedding.android.FlutterActivity
 
