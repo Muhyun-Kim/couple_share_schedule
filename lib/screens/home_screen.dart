@@ -12,7 +12,6 @@ import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/home_widget/home_schedule_list.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -70,6 +69,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         "https://firebasestorage.googleapis.com/v0/b/coupleshareschedule.appspot.com/o/profileImg%2Fguest.png?alt=media&token=65859ba3-3aea-470c-9e21-b3bcc32c4a1b");
   }
 
+  final partnerStream =
+      FirebaseFirestore.instance.collection(userUid).doc("partner").snapshots();
+
   @override
   void initState() {
     super.initState();
@@ -79,9 +81,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
       setUserInitialValue();
     }
   }
-
-  final partnerStream =
-      FirebaseFirestore.instance.collection(userUid).doc("partner").snapshots();
 
   @override
   Widget build(BuildContext context) {
@@ -174,6 +173,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     showModalBottomSheet(
                       context: context,
                       isScrollControlled: true,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
                       builder: (BuildContext context) {
                         return AddSchedule(
                           focusedDay: _focusedDay,
@@ -244,8 +246,11 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                 );
               },
             ),
-            drawer: LeftMenu(
-              currentUser: currentUser,
+            drawer: FractionallySizedBox(
+              widthFactor: 0.6,
+              child: LeftMenu(
+                currentUser: currentUser,
+              ),
             ),
           );
         }

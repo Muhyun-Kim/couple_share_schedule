@@ -7,6 +7,7 @@ import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 extension DateTimeExtension on DateTime {
@@ -73,7 +74,7 @@ class _AddScheduleState extends State<AddSchedule> {
   Widget build(BuildContext context) {
     final formattedDate = DateFormat('MM月dd日').format(widget.focusedDay);
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.9,
+      height: MediaQuery.of(context).size.height * 0.8,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 25,
@@ -81,14 +82,31 @@ class _AddScheduleState extends State<AddSchedule> {
         ),
         child: Column(
           children: [
-            Flexible(
-              flex: 1,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(formattedDate),
-                ],
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      formattedDate,
+                      style: GoogleFonts.sawarabiGothic(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.cancel_outlined,
+                    color: Color.fromARGB(255, 129, 129, 129),
+                  ),
+                ),
+              ],
             ),
             Flexible(
               flex: 5,
@@ -103,6 +121,7 @@ class _AddScheduleState extends State<AddSchedule> {
                       readOnly: true,
                       onTap: () async {
                         TimeOfDay? pickedStartTime = await showTimePicker(
+                          initialEntryMode: TimePickerEntryMode.inputOnly,
                           initialTime:
                               TimeOfDay.fromDateTime(widget.focusedDay),
                           context: context,
@@ -127,6 +146,7 @@ class _AddScheduleState extends State<AddSchedule> {
                       readOnly: true,
                       onTap: () async {
                         TimeOfDay? pickedEndTime = await showTimePicker(
+                          initialEntryMode: TimePickerEntryMode.inputOnly,
                           initialTime: TimeOfDay.now(),
                           context: context,
                         );
