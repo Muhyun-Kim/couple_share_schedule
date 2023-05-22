@@ -18,15 +18,14 @@ class ScheduleState extends StateNotifier<Map<DateTime, List<String>>> {
 
   void setSchedule(Map<DateTime, List<String>> schedule) {
     state = schedule;
-    ref.invalidate(scheduleProvider);
   }
 
   var _scheduleMap = <DateTime, List<String>>{};
   final currentUser = FirebaseAuth.instance.currentUser!;
 
-  Future<Map<DateTime, List<String>>> getSchedule() async {
+  Future<void> getSchedule(userid) async {
     final schduleListSnapshot = await FirebaseFirestore.instance
-        .collection(currentUser.uid)
+        .collection(userid)
         .orderBy("selectedDate")
         .get();
     final schedule = schduleListSnapshot.docs.map((doc) {
@@ -40,11 +39,6 @@ class ScheduleState extends StateNotifier<Map<DateTime, List<String>>> {
           schedule[i]['scheduleInfo'].cast<String>() as List<String>;
       _scheduleMap[selectedUtc] = scheduleInfo;
     }
-    return _scheduleMap;
-  }
-
-  void updateSchedule() async {
-    final value = await getSchedule();
-    setSchedule(value);
+    setSchedule(_scheduleMap);
   }
 }
