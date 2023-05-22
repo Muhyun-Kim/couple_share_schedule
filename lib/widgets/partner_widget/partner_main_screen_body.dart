@@ -1,16 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/widgets/partner_widget/partner_schedule_list.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:table_calendar/table_calendar.dart';
 
-class PartnerMainScreenBody extends StatefulWidget {
+class PartnerMainScreenBody extends ConsumerStatefulWidget {
   const PartnerMainScreenBody({super.key, required this.partnerUid});
   final String partnerUid;
   @override
-  State<PartnerMainScreenBody> createState() => _PartnerMainScreenBodyState();
+  ConsumerState<PartnerMainScreenBody> createState() =>
+      _PartnerMainScreenBodyState();
 }
 
-class _PartnerMainScreenBodyState extends State<PartnerMainScreenBody> {
+class _PartnerMainScreenBodyState extends ConsumerState<PartnerMainScreenBody> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;

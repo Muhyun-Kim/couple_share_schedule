@@ -4,9 +4,10 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
-import 'package:couple_share_schedule/screens/home_screen.dart';
+import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
@@ -16,17 +17,21 @@ extension DateTimeExtension on DateTime {
   }
 }
 
-class AddSchedule extends StatefulWidget {
+class AddSchedule extends ConsumerStatefulWidget {
   final DateTime focusedDay;
   final CollectionReference<ScheduleListModel> schedulesReference;
+  final Function updateBody;
   const AddSchedule(
-      {Key? key, required this.focusedDay, required this.schedulesReference})
+      {Key? key,
+      required this.focusedDay,
+      required this.schedulesReference,
+      required this.updateBody})
       : super(key: key);
   @override
-  State<AddSchedule> createState() => _AddScheduleState();
+  ConsumerState<AddSchedule> createState() => _AddScheduleState();
 }
 
-class _AddScheduleState extends State<AddSchedule> {
+class _AddScheduleState extends ConsumerState<AddSchedule> {
   final TextEditingController _startTimeInput = TextEditingController();
   final TextEditingController _endTimeInput = TextEditingController();
   final TextEditingController _scheduleInput = TextEditingController();
@@ -43,17 +48,24 @@ class _AddScheduleState extends State<AddSchedule> {
   }
 
   // エラーメッセージを表示するfunction
-  void _showAlertDialog(BuildContext context, String errorMessage) {
+  void _showRoundedAlertDialog(BuildContext context, String errorMessage) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(content: Text(errorMessage), actions: [
-          TextButton(
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          content: Text(errorMessage),
+          actions: [
+            TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text("OK"))
-        ]);
+              child: const Text("OK"),
+            )
+          ],
+        );
       },
     );
   }
@@ -194,17 +206,16 @@ class _AddScheduleState extends State<AddSchedule> {
                             });
                           }
                           if (mounted) {
-                            Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    const HomeScreen(),
-                              ),
-                            );
+                            await ref
+                                .read(scheduleProvider.notifier)
+                                .getSchedule(userId);
+                            widget.updateBody();
+                            Navigator.pop(context);
                           }
                         } else if (_scheduleInput.text != "") {
-                          _showAlertDialog(context, "時間を入力してください");
+                          _showRoundedAlertDialog(context, "時間を入力してください");
                         } else {
-                          _showAlertDialog(context, "スケジュールを入力してください");
+                          _showRoundedAlertDialog(context, "スケジュールを入力してください");
                         }
                       },
                       child: const Text("保存"),
