@@ -66,7 +66,6 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
     currentUserPhotoURL = watchCurrentUser == null
         ? FirebaseAuth.instance.currentUser!.photoURL ?? ""
         : watchCurrentUser.photoURL ?? "";
-    debugPrint("currentPhoto:$currentUserPhotoURL");
 
     return Scaffold(
       appBar: AppBar(

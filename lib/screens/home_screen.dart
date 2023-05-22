@@ -4,6 +4,7 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
+import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:couple_share_schedule/screens/loading_screen.dart';
 import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
@@ -32,36 +33,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  var _scheduleMap = <DateTime, List<String>>{};
+  // var _scheduleMap = <DateTime, List<String>>{};
   late CollectionReference<ScheduleListModel> schedulesReference;
   List<String> _selectedEvents = [];
-
-  //FireStroeからスケジュール情報を持ってきて,table_calendarライブラリーに適用できるように型変換するfunction
-  Future<Map<DateTime, List<String>>> getSchedule() async {
-    final schduleListSnapshot = await FirebaseFirestore.instance
-        .collection(currentUser!.uid)
-        .orderBy("selectedDate")
-        .get();
-    final schedule = schduleListSnapshot.docs.map((doc) {
-      return doc.data();
-    }).toList();
-    for (var i = 0; i < schedule.length; i++) {
-      final selectedDate = (schedule[i]['selectedDate'] as Timestamp).toDate();
-      final DateTime selectedUtc =
-          DateTime.utc(selectedDate.year, selectedDate.month, selectedDate.day);
-      final scheduleInfo =
-          schedule[i]['scheduleInfo'].cast<String>() as List<String>;
-      _scheduleMap[selectedUtc] = scheduleInfo;
-    }
-    return _scheduleMap;
-  }
-
-  Future<void> updateSchedule() async {
-    final value = await getSchedule();
-    setState(() {
-      _scheduleMap = value;
-    });
-  }
 
   Future<void> setUserInitialValue() async {
     await currentUser!.updateDisplayName("ゲスト");
@@ -72,25 +46,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final partnerStream =
       FirebaseFirestore.instance.collection(userUid).doc("partner").snapshots();
 
+  void _updateBody() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
-    updateSchedule();
     if (FirebaseAuth.instance.currentUser!.displayName == null ||
         FirebaseAuth.instance.currentUser!.photoURL == null) {
       setUserInitialValue();
     }
+    ref.read(scheduleProvider.notifier).getSchedule(userUid);
   }
 
   @override
   Widget build(BuildContext context) {
     var partnerInfo;
+
+    // 現在のユーザー名を取得
     String currentUserName;
     if (ref.watch(currentUserProvider) == null) {
       currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "ゲスト";
     } else {
       currentUserName = ref.watch(currentUserProvider)!.displayName ?? "ゲスト";
     }
+
+    // get schedule from provider
+    Map<DateTime, List<String>> _myScheduleMap;
+    _myScheduleMap = ref.watch(scheduleProvider);
 
     final CollectionReference<ScheduleListModel> schedulesReference =
         FirebaseFirestore.instance
@@ -103,8 +87,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return value.toMap();
       }),
     );
-
     //Icon button 定義
+
     IconButton _buildQrCodeIconButton(BuildContext context) {
       return IconButton(
         onPressed: () {
@@ -180,6 +164,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         return AddSchedule(
                           focusedDay: _focusedDay,
                           schedulesReference: schedulesReference,
+                          updateBody: _updateBody,
                         );
                       },
                     );
@@ -226,20 +211,19 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                 _selectedDay = selectedDay;
                                 _focusedDay = focusedDay;
                                 _selectedEvents =
-                                    _scheduleMap[selectedDay] ?? [];
+                                    _myScheduleMap[selectedDay] ?? [];
                               },
                             );
                           },
                           eventLoader: (date) {
-                            return _scheduleMap[date] ?? [];
+                            return _myScheduleMap[date] ?? [];
                           },
                         ),
                       ),
                       HomeScheduleList(
                         selectedEvents: _selectedEvents,
                         focusedDay: _focusedDay,
-                        updateSchedule: updateSchedule,
-                        scheduleMap: _scheduleMap,
+                        updateBody: _updateBody,
                       ),
                     ],
                   ),

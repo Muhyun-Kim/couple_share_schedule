@@ -28,18 +28,17 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
 
   @override
   Widget build(BuildContext context) {
+    User currentUser;
     String currentUserName;
-    if (ref.watch(currentUserProvider) == null) {
-      currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "";
-    } else {
-      currentUserName = ref.watch(currentUserProvider)!.displayName ?? "";
-    }
-
     String currentUserPhotoURL;
     if (ref.watch(currentUserProvider) == null) {
+      currentUser = FirebaseAuth.instance.currentUser!;
       currentUserPhotoURL = FirebaseAuth.instance.currentUser!.photoURL ?? "";
+      currentUserName = FirebaseAuth.instance.currentUser!.displayName ?? "";
     } else {
+      currentUser = ref.watch(currentUserProvider)!;
       currentUserPhotoURL = ref.watch(currentUserProvider)!.photoURL ?? "";
+      currentUserName = ref.watch(currentUserProvider)!.displayName ?? "";
     }
 
     final TextEditingController displayNameInput = TextEditingController();
@@ -120,9 +119,8 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                                           child: const Text('変更'),
                                           onPressed: () async {
                                             Navigator.of(context).pop();
-                                            await widget.currentUser!
-                                                .updateDisplayName(
-                                                    displayNameInput.text);
+                                            await currentUser.updateDisplayName(
+                                                displayNameInput.text);
                                             final user = FirebaseAuth
                                                 .instance.currentUser!;
                                             final userProvider = ref.read(
@@ -199,7 +197,7 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                           TextButton(
                             onPressed: () async {
                               if (deleteAccountInput.text == "削除") {
-                                await widget.currentUser!.delete().catchError(
+                                await currentUser.delete().catchError(
                                       (error) => showDialog(
                                         context: context,
                                         builder: (BuildContext context) {

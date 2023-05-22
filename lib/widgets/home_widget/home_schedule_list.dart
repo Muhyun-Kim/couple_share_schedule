@@ -1,26 +1,25 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class HomeScheduleList extends StatefulWidget {
+class HomeScheduleList extends ConsumerStatefulWidget {
   const HomeScheduleList({
-    super.key,
     required List<String> selectedEvents,
     required this.focusedDay,
-    required this.updateSchedule,
-    required this.scheduleMap,
+    required this.updateBody,
   }) : _selectedEvents = selectedEvents;
 
   final List<String> _selectedEvents;
   final DateTime focusedDay;
-  final Function updateSchedule;
-  final Map<DateTime, List<String>> scheduleMap;
+  final Function updateBody;
 
   @override
-  State<HomeScheduleList> createState() => _HomeScheduleListState();
+  ConsumerState<HomeScheduleList> createState() => _HomeScheduleListState();
 }
 
-class _HomeScheduleListState extends State<HomeScheduleList> {
+class _HomeScheduleListState extends ConsumerState<HomeScheduleList> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -38,7 +37,7 @@ class _HomeScheduleListState extends State<HomeScheduleList> {
                 children: [
                   Text(event),
                   IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       final userId = FirebaseAuth.instance.currentUser!.uid;
                       final docName =
                           widget.focusedDay.toString().substring(0, 10);
@@ -49,9 +48,11 @@ class _HomeScheduleListState extends State<HomeScheduleList> {
                         'scheduleInfo': FieldValue.arrayRemove([event]),
                       };
                       docRef.update(deleteScheduleInfo);
-                      widget.updateSchedule();
+                      await ref
+                          .read(scheduleProvider.notifier)
+                          .getSchedule(userId);
+                      widget.updateBody();
                       setState(() {
-                        widget.scheduleMap;
                         widget._selectedEvents.remove(event);
                       });
                     },
