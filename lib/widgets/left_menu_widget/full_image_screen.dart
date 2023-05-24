@@ -21,11 +21,12 @@ class FullImageScreen extends StatefulHookConsumerWidget {
 }
 
 class _FullImageScreenState extends ConsumerState<FullImageScreen> {
-  final profileImgRef = storageRef.child("profileImg/$userUid");
-  //function to get image from gallery
 
-  File? image;
+  // profileを保存する場所
+  final profileImgRef = storageRef.child("profileImg/$userUid");
+
   // 画像をギャラリーから選ぶ関数
+  File? image;
   Future pickImage() async {
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -37,7 +38,7 @@ class _FullImageScreenState extends ConsumerState<FullImageScreen> {
     }
   }
 
-  //function to upload image to firebase storage
+  //firebase storageに画像をアップロードする関数
   Future uploadImageToStorage(BuildContext context) async {
     if (image != null) {
       try {
