@@ -33,8 +33,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  // var _scheduleMap = <DateTime, List<String>>{};
-  late CollectionReference<ScheduleListModel> schedulesReference;
+  // late CollectionReference<ScheduleListModel> schedulesReference;
   List<String> _selectedEvents = [];
 
   Future<void> setUserInitialValue() async {
@@ -87,8 +86,8 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return value.toMap();
       }),
     );
-    //Icon button 定義
 
+    //Icon button 定義
     IconButton _buildQrCodeIconButton(BuildContext context) {
       return IconButton(
         onPressed: () {

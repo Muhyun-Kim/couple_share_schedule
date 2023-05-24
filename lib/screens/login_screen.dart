@@ -2,6 +2,8 @@
 //Modified : 2023/05/06
 //Function : ログイン状態の時、最初表示される画面
 
+import 'dart:io';
+
 import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:couple_share_schedule/widgets/ui_widget/login_button.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -107,22 +109,24 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(
-                          width: 40,
-                        ),
-                        loginButton(
-                          onTap: () async {
-                            await signInWithApple();
-                            final User user =
-                                FirebaseAuth.instance.currentUser!;
-                            final userProvider =
-                                ref.read(currentUserProvider.notifier);
-                            userProvider.setUser(user);
-                          },
-                          assetImage: 'assets/images/apple_logo.png',
-                          backgroundColor: Colors.black,
-                          scale: 0.56,
-                        )
+                        if (Platform.isIOS)
+                          SizedBox(
+                            width: 40,
+                          ),
+                        if (Platform.isIOS)
+                          loginButton(
+                            onTap: () async {
+                              await signInWithApple();
+                              final User user =
+                                  FirebaseAuth.instance.currentUser!;
+                              final userProvider =
+                                  ref.read(currentUserProvider.notifier);
+                              userProvider.setUser(user);
+                            },
+                            assetImage: 'assets/images/apple_logo.png',
+                            backgroundColor: Colors.black,
+                            scale: 0.56,
+                          )
                       ],
                     ),
                   ],
