@@ -9,10 +9,10 @@ import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:couple_share_schedule/screens/loading_screen.dart';
 import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
 import 'package:couple_share_schedule/screens/partner_main_screen.dart';
-import 'package:couple_share_schedule/widgets/add_schedule.dart';
 import 'package:couple_share_schedule/widgets/home_widget/home_schedule_list.dart';
 import 'package:couple_share_schedule/widgets/left_menu.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
+import 'package:couple_share_schedule/widgets/modal_widget/add_schedule_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -160,7 +160,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                         borderRadius: BorderRadius.circular(25),
                       ),
                       builder: (BuildContext context) {
-                        return AddSchedule(
+                        return AddScheduleModal(
                           focusedDay: _focusedDay,
                           schedulesReference: schedulesReference,
                           updateBody: _updateBody,

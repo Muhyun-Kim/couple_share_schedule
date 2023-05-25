@@ -17,21 +17,21 @@ extension DateTimeExtension on DateTime {
   }
 }
 
-class AddSchedule extends ConsumerStatefulWidget {
+class AddScheduleModal extends ConsumerStatefulWidget {
   final DateTime focusedDay;
   final CollectionReference<ScheduleListModel> schedulesReference;
   final Function updateBody;
-  const AddSchedule(
+  const AddScheduleModal(
       {Key? key,
       required this.focusedDay,
       required this.schedulesReference,
       required this.updateBody})
       : super(key: key);
   @override
-  ConsumerState<AddSchedule> createState() => _AddScheduleState();
+  ConsumerState<AddScheduleModal> createState() => _AddScheduleModalState();
 }
 
-class _AddScheduleState extends ConsumerState<AddSchedule> {
+class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
   final TextEditingController _startTimeInput = TextEditingController();
   final TextEditingController _endTimeInput = TextEditingController();
   final TextEditingController _scheduleInput = TextEditingController();
