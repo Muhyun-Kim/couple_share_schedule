@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/provider/schedule_provider.dart';
+import 'package:couple_share_schedule/widgets/modal_widget/update_schedule_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +23,9 @@ class HomeScheduleList extends ConsumerStatefulWidget {
 class _HomeScheduleListState extends ConsumerState<HomeScheduleList> {
   @override
   Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final docName = widget.focusedDay.toString().substring(0, 10);
+    final docRef = FirebaseFirestore.instance.collection(userId).doc(docName);
     return SizedBox(
       //selectedEventsを削除する機能を追加する
       height: 300,
@@ -38,12 +42,6 @@ class _HomeScheduleListState extends ConsumerState<HomeScheduleList> {
                   Text(event),
                   IconButton(
                     onPressed: () async {
-                      final userId = FirebaseAuth.instance.currentUser!.uid;
-                      final docName =
-                          widget.focusedDay.toString().substring(0, 10);
-                      final docRef = FirebaseFirestore.instance
-                          .collection(userId)
-                          .doc(docName);
                       final deleteScheduleInfo = {
                         'scheduleInfo': FieldValue.arrayRemove([event]),
                       };
@@ -63,6 +61,24 @@ class _HomeScheduleListState extends ConsumerState<HomeScheduleList> {
                   ),
                 ],
               ),
+              onTap: () {
+                showModalBottomSheet(
+                  context: context,
+                  isScrollControlled: true,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(25),
+                  ),
+                  builder: (BuildContext context) {
+                    return UpdateScheduleModal(
+                      selectedEvents: widget._selectedEvents,
+                      focusedDay: widget.focusedDay,
+                      updateBody: widget.updateBody,
+                      event: event,
+                      docRef: docRef,
+                    );
+                  },
+                );
+              },
             ),
           );
         },
