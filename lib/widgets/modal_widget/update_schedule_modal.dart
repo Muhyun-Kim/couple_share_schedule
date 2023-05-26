@@ -1,52 +1,38 @@
-//Author : muhyun-kim
-//Modified : 2023/04/22
-//Function : ログイン状態の時、最初表示される画面
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/provider/schedule_provider.dart';
+import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
+import 'package:couple_share_schedule/widgets/modal_widget/add_schedule_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
 
-extension DateTimeExtension on DateTime {
-  DateTime applied(TimeOfDay time) {
-    return DateTime(year, month, day, time.hour, time.minute);
-  }
-}
+class UpdateScheduleModal extends StatefulHookConsumerWidget {
+  const UpdateScheduleModal({
+    super.key,
+    required this.focusedDay,
+    required this.event,
+    required List<String> selectedEvents,
+    required this.docRef,
+    required this.updateBody,
+  }) : _selectedEvents = selectedEvents;
 
-class AddScheduleModal extends ConsumerStatefulWidget {
+  final List<String> _selectedEvents;
   final DateTime focusedDay;
-  final CollectionReference<ScheduleListModel> schedulesReference;
+  final String event;
+  final DocumentReference<Map<String, dynamic>> docRef;
   final Function updateBody;
-  const AddScheduleModal(
-      {Key? key,
-      required this.focusedDay,
-      required this.schedulesReference,
-      required this.updateBody})
-      : super(key: key);
+
   @override
-  ConsumerState<AddScheduleModal> createState() => _AddScheduleModalState();
+  ConsumerState<ConsumerStatefulWidget> createState() =>
+      _UpdateScheduleModalState();
 }
 
-class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
+class _UpdateScheduleModalState extends ConsumerState<UpdateScheduleModal> {
   final TextEditingController _startTimeInput = TextEditingController();
   final TextEditingController _endTimeInput = TextEditingController();
   final TextEditingController _scheduleInput = TextEditingController();
-  final userId = FirebaseAuth.instance.currentUser?.uid;
-  Map<String, dynamic>? scheduleGetInfo;
-
-  Future getScheduleInfo() async {
-    final userId = FirebaseAuth.instance.currentUser!.uid;
-    final docName = widget.focusedDay.toString().substring(0, 10);
-    print(docName);
-    final schduleSnapshot =
-        await FirebaseFirestore.instance.collection(userId).doc(docName).get();
-    final scheduleInfo = schduleSnapshot.data();
-    return scheduleInfo;
-  }
 
   // エラーメッセージを表示するfunction
   void _showRoundedAlertDialog(BuildContext context, String errorMessage) {
@@ -72,22 +58,14 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
   }
 
   @override
-  void initState() {
-    _startTimeInput.text = "";
-    _endTimeInput.text = "";
-    super.initState();
-    getScheduleInfo().then((value) {
-      setState(() {
-        scheduleGetInfo = value;
-      });
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser!.uid;
+    final docName = widget.focusedDay.toString().substring(0, 10);
+    final docRef = FirebaseFirestore.instance.collection(userId).doc(docName);
+    print(docRef);
     final formattedDate = DateFormat('MM月dd日').format(widget.focusedDay);
     return SizedBox(
-      height: MediaQuery.of(context).size.height * 0.8,
+      height: MediaQuery.of(context).size.height * 0.7,
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: 25,
@@ -111,9 +89,7 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
                   ],
                 ),
                 IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
+                  onPressed: () => Navigator.pop(context),
                   icon: Icon(
                     Icons.cancel_outlined,
                     color: Color.fromARGB(255, 129, 129, 129),
@@ -122,14 +98,13 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
               ],
             ),
             Flexible(
-              flex: 5,
               child: Center(
                 child: Column(
                   children: [
                     TextField(
                       controller: _startTimeInput,
                       decoration: const InputDecoration(
-                        labelText: "開始時間",
+                        labelText: '開始時間',
                       ),
                       readOnly: true,
                       onTap: () async {
@@ -186,44 +161,31 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
                         if (_startTimeInput.text != "" &&
                             _endTimeInput.text != "" &&
                             _scheduleInput.text != "") {
-                          final List scheduleInfo = [
+                          final scheduleInfo = [
                             "${_startTimeInput.text} - ${_endTimeInput.text} : ${_scheduleInput.text}"
                           ];
-                          final newDocumentReference =
-                              widget.schedulesReference.doc(
-                            widget.focusedDay.toString().substring(0, 10),
-                          );
-                          final newSchedule = ScheduleListModel(
-                            selectedDate: widget.focusedDay,
-                            scheduleInfo: scheduleInfo,
-                          );
-                          if (scheduleGetInfo == null) {
-                            await newDocumentReference.set(newSchedule);
-                          } else {
-                            await newDocumentReference.update({
-                              "scheduleInfo":
-                                  FieldValue.arrayUnion(scheduleInfo)
-                            });
-                          }
-                          if (mounted) {
-                            await ref
-                                .read(scheduleProvider.notifier)
-                                .getSchedule(userId);
-                            await widget.updateBody();
-                            Navigator.pop(context);
-                          }
-                        } else if (_scheduleInput.text != "") {
-                          _showRoundedAlertDialog(context, "時間を入力してください");
-                        } else {
-                          _showRoundedAlertDialog(context, "スケジュールを入力してください");
+                          final deleteSchedule = {
+                            'scheduleInfo':
+                                FieldValue.arrayRemove([widget.event]),
+                          };
+                          final updateSchedule = {
+                            'scheduleInfo': FieldValue.arrayUnion(scheduleInfo),
+                          };
+                          await widget.docRef.update(deleteSchedule);
+                          await widget.docRef.update(updateSchedule);
+                          ref
+                              .read(scheduleProvider.notifier)
+                              .getSchedule(userUid);
+                          await widget.updateBody();
+                          Navigator.pop(context);
                         }
                       },
-                      child: const Text("保存"),
-                    )
+                      child: Text("変更"),
+                    ),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
