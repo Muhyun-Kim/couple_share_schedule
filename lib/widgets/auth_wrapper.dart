@@ -2,34 +2,25 @@
 //Modified : 2023/03/15
 //Function : 最初アプリを開い際、ログイン状態による画面表示
 
-import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:couple_share_schedule/screens/loading_screen.dart';
 import 'package:couple_share_schedule/screens/login_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class AuthWrapper extends ConsumerWidget {
-  const AuthWrapper({super.key});
-
+class AuthWrapper extends StatelessWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-
+  Widget build(BuildContext context) {
     return StreamBuilder<User?>(
       stream: FirebaseAuth.instance.authStateChanges(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.active) {
-          User? user = snapshot.data;
-          if (user == null) {
-            return const LoginScreen();
-          } else {
-            
-            return const HomeScreen();
-          }
-        } else {
-          return const LoadingScreen();
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return LoadingScreen();
         }
+        if (snapshot.hasData) {
+          return HomeScreen();
+        }
+        return LoginScreen();
       },
     );
   }
