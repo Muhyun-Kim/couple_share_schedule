@@ -161,15 +161,16 @@ class _UpdateScheduleModalState extends ConsumerState<UpdateScheduleModal> {
                         if (_startTimeInput.text != "" &&
                             _endTimeInput.text != "" &&
                             _scheduleInput.text != "") {
-                          final scheduleInfo = [
-                            "${_startTimeInput.text} - ${_endTimeInput.text} : ${_scheduleInput.text}"
-                          ];
+                          final scheudleInfo =
+                              "${_startTimeInput.text} - ${_endTimeInput.text} : ${_scheduleInput.text}";
+                          final scheduleInfoList = [scheudleInfo];
                           final deleteSchedule = {
                             'scheduleInfo':
                                 FieldValue.arrayRemove([widget.event]),
                           };
                           final updateSchedule = {
-                            'scheduleInfo': FieldValue.arrayUnion(scheduleInfo),
+                            'scheduleInfo':
+                                FieldValue.arrayUnion(scheduleInfoList),
                           };
                           await widget.docRef.update(deleteSchedule);
                           await widget.docRef.update(updateSchedule);
@@ -177,7 +178,15 @@ class _UpdateScheduleModalState extends ConsumerState<UpdateScheduleModal> {
                               .read(scheduleProvider.notifier)
                               .getSchedule(userUid);
                           await widget.updateBody();
+                          setState(() {
+                            widget._selectedEvents.remove(widget.event);
+                            widget._selectedEvents.add(scheudleInfo);
+                          });
                           Navigator.pop(context);
+                        } else if (_scheduleInput.text != "") {
+                          _showRoundedAlertDialog(context, "時間を入力してください");
+                        } else {
+                          _showRoundedAlertDialog(context, "スケジュールを入力してください");
                         }
                       },
                       child: Text("変更"),

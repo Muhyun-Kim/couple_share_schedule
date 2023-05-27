@@ -45,6 +45,10 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final partnerStream =
       FirebaseFirestore.instance.collection(userUid).doc("partner").snapshots();
 
+  void _updateBody() {
+    setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -82,12 +86,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
         return value.toMap();
       }),
     );
-
-    void _updateBody() {
-      setState(() {
-        _selectedEvents;
-      });
-    }
 
     //Icon button 定義
     IconButton _buildQrCodeIconButton(BuildContext context) {
@@ -163,6 +161,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                       ),
                       builder: (BuildContext context) {
                         return AddScheduleModal(
+                          selectedEvents: _selectedEvents,
                           focusedDay: _focusedDay,
                           schedulesReference: schedulesReference,
                           updateBody: _updateBody,

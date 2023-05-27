@@ -21,8 +21,10 @@ class AddScheduleModal extends ConsumerStatefulWidget {
   final DateTime focusedDay;
   final CollectionReference<ScheduleListModel> schedulesReference;
   final Function updateBody;
+  final List<String> selectedEvents;
   const AddScheduleModal(
       {Key? key,
+      required this.selectedEvents,
       required this.focusedDay,
       required this.schedulesReference,
       required this.updateBody})
@@ -186,23 +188,23 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
                         if (_startTimeInput.text != "" &&
                             _endTimeInput.text != "" &&
                             _scheduleInput.text != "") {
-                          final List scheduleInfo = [
-                            "${_startTimeInput.text} - ${_endTimeInput.text} : ${_scheduleInput.text}"
-                          ];
+                          final scheduleInfo =
+                              "${_startTimeInput.text} - ${_endTimeInput.text} : ${_scheduleInput.text}";
+                          final scheduleInfoList = [scheduleInfo];
                           final newDocumentReference =
                               widget.schedulesReference.doc(
                             widget.focusedDay.toString().substring(0, 10),
                           );
                           final newSchedule = ScheduleListModel(
                             selectedDate: widget.focusedDay,
-                            scheduleInfo: scheduleInfo,
+                            scheduleInfo: scheduleInfoList,
                           );
                           if (scheduleGetInfo == null) {
                             await newDocumentReference.set(newSchedule);
                           } else {
                             await newDocumentReference.update({
                               "scheduleInfo":
-                                  FieldValue.arrayUnion(scheduleInfo)
+                                  FieldValue.arrayUnion(scheduleInfoList)
                             });
                           }
                           if (mounted) {
@@ -210,6 +212,9 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
                                 .read(scheduleProvider.notifier)
                                 .getSchedule(userId);
                             await widget.updateBody();
+                            setState(() {
+                              widget.selectedEvents.add(scheduleInfo);
+                            });
                             Navigator.pop(context);
                           }
                         } else if (_scheduleInput.text != "") {
