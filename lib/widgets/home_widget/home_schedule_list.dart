@@ -21,6 +21,10 @@ class HomeScheduleList extends ConsumerStatefulWidget {
 }
 
 class _HomeScheduleListState extends ConsumerState<HomeScheduleList> {
+  void _updateSchedule() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
