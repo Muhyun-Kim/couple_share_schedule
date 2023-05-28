@@ -1,5 +1,5 @@
 //Author : muhyun-kim
-//Modified : 2023/05/06
+//Modified : 2023/05/28
 //Function : ログイン状態の時、最初表示される画面
 
 import 'dart:io';
@@ -21,8 +21,13 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  //ログイン中かどうかの判断
+  bool _isLoading = false;
   //google login
   Future<UserCredential> signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+    });
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     final GoogleSignInAuthentication? googleAuth =
         await googleUser?.authentication;
@@ -85,50 +90,56 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        InkWell(
-                          onTap: () async {
-                            await signInWithGoogle();
-                            final User user =
-                                FirebaseAuth.instance.currentUser!;
-                            final userProvider =
-                                ref.read(currentUserProvider.notifier);
-                            userProvider.setUser(user);
-                          },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.white,
-                            radius: 35,
-                            child: Transform.scale(
-                              scale: 0.5,
-                              child: Image.asset(
-                                'assets/images/google_logo.png',
-                                fit: BoxFit.contain,
+                    _isLoading
+                        ? CircularProgressIndicator()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  await signInWithGoogle();
+                                  final User? user =
+                                      FirebaseAuth.instance.currentUser;
+                                  if (user != null) {
+                                    final userProvider =
+                                        ref.read(currentUserProvider.notifier);
+                                    userProvider.setUser(user);
+                                  } else {
+                                    print("user is null");
+                                  }
+                                },
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.white,
+                                  radius: 35,
+                                  child: Transform.scale(
+                                    scale: 0.5,
+                                    child: Image.asset(
+                                      'assets/images/google_logo.png',
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                ),
                               ),
-                            ),
+                              if (Platform.isIOS)
+                                SizedBox(
+                                  width: 40,
+                                ),
+                              if (Platform.isIOS)
+                                loginButton(
+                                  onTap: () async {
+                                    await signInWithApple();
+                                    final User user =
+                                        FirebaseAuth.instance.currentUser!;
+                                    final userProvider =
+                                        ref.read(currentUserProvider.notifier);
+                                    userProvider.setUser(user);
+                                  },
+                                  assetImage: 'assets/images/apple_logo.png',
+                                  backgroundColor: Colors.black,
+                                  scale: 0.56,
+                                )
+                            ],
                           ),
-                        ),
-                        if (Platform.isIOS)
-                          SizedBox(
-                            width: 40,
-                          ),
-                        if (Platform.isIOS)
-                          loginButton(
-                            onTap: () async {
-                              await signInWithApple();
-                              final User user =
-                                  FirebaseAuth.instance.currentUser!;
-                              final userProvider =
-                                  ref.read(currentUserProvider.notifier);
-                              userProvider.setUser(user);
-                            },
-                            assetImage: 'assets/images/apple_logo.png',
-                            backgroundColor: Colors.black,
-                            scale: 0.56,
-                          )
-                      ],
-                    ),
                   ],
                 ),
               ),
