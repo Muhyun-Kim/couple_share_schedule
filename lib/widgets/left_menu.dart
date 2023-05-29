@@ -215,6 +215,9 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
                                         },
                                       ),
                                     );
+                                final userProvider =
+                                    ref.read(currentUserProvider.notifier);
+                                userProvider.setUser(null);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
