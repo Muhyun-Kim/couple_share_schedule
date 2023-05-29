@@ -12,7 +12,7 @@ class AuthState extends StateNotifier<User?> {
   AuthState(this.ref) : super(null);
   Ref ref;
 
-  void setUser(User user) {
+  void setUser(User? user) {
     state = user;
     ref.invalidate(currentUserProvider);
   }
