@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/models/partner_model.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -77,13 +78,14 @@ class _PartnerAddScreenState extends ConsumerState<PartnerAddScreen> {
                     backgroundColor: Color(0xFFC3E99D),
                   ),
                   onPressed: () async {
+                    final newPartner = PartnerModel(
+                      partnerUid: _partnerUid,
+                      partnerName: _partnerNameInput.text,
+                    );
                     await FirebaseFirestore.instance
                         .collection(currentUserUid)
                         .doc("partner")
-                        .set({
-                      "partnerUid": _partnerUid,
-                      "partnerName": _partnerNameInput.text,
-                    });
+                        .set(newPartner.toMap());
                     if (!mounted) return;
                     Navigator.push(
                       context,
