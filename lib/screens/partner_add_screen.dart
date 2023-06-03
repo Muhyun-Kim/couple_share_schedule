@@ -82,10 +82,11 @@ class _PartnerAddScreenState extends ConsumerState<PartnerAddScreen> {
                       partnerUid: _partnerUid,
                       partnerName: _partnerNameInput.text,
                     );
+                    print(newPartner);
                     await FirebaseFirestore.instance
                         .collection(currentUserUid)
                         .doc("partner")
-                        .set(newPartner.toMap());
+                        .set(newPartner.toJson());
                     if (!mounted) return;
                     Navigator.push(
                       context,
@@ -94,7 +95,7 @@ class _PartnerAddScreenState extends ConsumerState<PartnerAddScreen> {
                       ),
                     );
                   },
-                  child: const Text(
+                  child: Text(
                     "追加",
                     style: TextStyle(fontSize: 20, color: Colors.black),
                   ),

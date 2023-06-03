@@ -33,7 +33,6 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  // late CollectionReference<ScheduleListModel> schedulesReference;
   List<String> _selectedEvents = [];
 
   Future<void> setUserInitialValue() async {
