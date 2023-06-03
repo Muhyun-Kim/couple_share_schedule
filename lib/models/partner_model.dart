@@ -18,10 +18,4 @@ class PartnerModel with _$PartnerModel {
   factory PartnerModel.fromJson(Map<String, dynamic> json) =>
       _$PartnerModelFromJson(json);
 
-  Map<String, dynamic> toMap() {
-    return {
-      'partnerUid': partnerUid,
-      'partnerName': partnerName,
-    };
-  }
 }
