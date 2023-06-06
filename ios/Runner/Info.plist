@@ -38,11 +38,11 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>This app requires to add file to your camera</string>
+	<string>このアプリは、カメラにファイルを追加する必要があります。</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>This app requires to add file to your photo library your microphone</string>
+	<string>このアプリでは、写真ライブラリとマイクにファイルを追加する必要があります。</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>This app requires to access your photo library</string>
+	<string>このアプリでは、写真ライブラリへのアクセスが必要です。</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
