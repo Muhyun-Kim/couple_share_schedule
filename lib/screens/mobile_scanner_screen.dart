@@ -1,5 +1,9 @@
+//Author : muhyun-kim
+//Modified : 2023/06/08
+//Function : QRコードでパートナーを追加する画面
+
 import 'package:couple_share_schedule/screens/partner_add_screen.dart';
-import 'package:couple_share_schedule/widgets/left_menu_widget/user_qrcode.dart';
+import 'package:couple_share_schedule/widgets/modal_widget/qr_code_bottom_modal.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
@@ -64,16 +68,7 @@ class _MobileScannerScreenState extends State<MobileScannerScreen> {
           SizedBox(
             child: TextButton(
               onPressed: () {
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(25.0),
-                  ),
-                  context: context,
-                  builder: (BuildContext buildContext) {
-                    return const UserQRCode();
-                  },
-                );
+                QrCodeBottomModal.show(context);
               },
               child: Column(
                 children: [

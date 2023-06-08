@@ -1,6 +1,11 @@
+//Author : muhyun-kim
+//Modified : 2023/06/08
+//Function : ホームの左メニュー
+
 import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:couple_share_schedule/screens/login_screen.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
+import 'package:couple_share_schedule/widgets/modal_widget/qr_code_bottom_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +21,7 @@ class LeftMenu extends ConsumerStatefulWidget {
 }
 
 class _LeftMenuState extends ConsumerState<LeftMenu> {
-  void _opnePrivacyPolicy() async {
+  void _openPrivacyPolicy() async {
     Uri url = Uri.parse(
         'https://muhyun-kim.github.io/couple_share_schedule_privacy/privacy_jp.html');
     if (await canLaunchUrl(url)) {
@@ -157,10 +162,19 @@ class _LeftMenuState extends ConsumerState<LeftMenu> {
           ),
           ListTile(
             leading: Icon(
+              Icons.qr_code_outlined,
+            ),
+            title: Text("ユーザーID"),
+            onTap: () {
+              QrCodeBottomModal.show(context);
+            },
+          ),
+          ListTile(
+            leading: Icon(
               Icons.security_outlined,
             ),
             title: Text("利用規約"),
-            onTap: _opnePrivacyPolicy,
+            onTap: _openPrivacyPolicy,
           ),
           ListTile(
             leading: Icon(
