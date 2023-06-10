@@ -1,5 +1,8 @@
+//Author : muhyun-kim
+//Modified : 2023/06/08
+//Function : パートナースケジュール画面
+
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -40,13 +43,7 @@ class _PartnerMainScreenState extends State<PartnerMainScreen> {
               actions: [
                 IconButton(
                   onPressed: () {
-                    // Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomeScreen(),
-                      ),
-                    );
+                    Navigator.pop(context);
                   },
                   icon: const Icon(
                     Icons.person_outline,
