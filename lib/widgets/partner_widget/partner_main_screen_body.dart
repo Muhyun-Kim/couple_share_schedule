@@ -1,3 +1,7 @@
+//Author : muhyun-kim
+//Modified : 2023/06/10
+//Function : パートナースケジュール画面
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/widgets/partner_widget/partner_schedule_list.dart';
 import 'package:flutter/material.dart';
@@ -57,53 +61,54 @@ class _PartnerMainScreenBodyState extends ConsumerState<PartnerMainScreenBody> {
     final partnerScheduleStream =
         FirebaseFirestore.instance.collection(widget.partnerUid).snapshots();
     return StreamBuilder<Object>(
-        stream: partnerScheduleStream,
-        builder: (context, snapshot) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TableCalendar(
-                  locale: 'ja_JP',
-                  focusedDay: _focusedDay,
-                  firstDay: DateTime.utc(2020, 1, 1),
-                  lastDay: DateTime.utc(2030, 12, 31),
-                  calendarFormat: _calendarFormat,
-                  availableCalendarFormats: const {
-                    CalendarFormat.month: '週',
-                    CalendarFormat.week: '月',
-                  },
-                  onFormatChanged: (format) {
-                    setState(
-                      () {
-                        _calendarFormat = format;
-                      },
-                    );
-                  },
-                  selectedDayPredicate: (day) {
-                    return isSameDay(_selectedDay, day);
-                  },
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(
-                      () {
-                        _selectedDay = selectedDay;
-                        _focusedDay = focusedDay;
-                        _selectedEvents = partnerScheduleMap[selectedDay] ?? [];
-                      },
-                    );
-                  },
-                  eventLoader: (date) {
-                    return partnerScheduleMap[date] ?? [];
-                  },
-                ),
-              ),
-              PartnerScheduleList(
-                selectedEvents: _selectedEvents,
+      stream: partnerScheduleStream,
+      builder: (context, snapshot) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: TableCalendar(
+                locale: 'ja_JP',
                 focusedDay: _focusedDay,
+                firstDay: DateTime.utc(2020, 1, 1),
+                lastDay: DateTime.utc(2030, 12, 31),
+                calendarFormat: _calendarFormat,
+                availableCalendarFormats: const {
+                  CalendarFormat.month: '週',
+                  CalendarFormat.week: '月',
+                },
+                onFormatChanged: (format) {
+                  setState(
+                    () {
+                      _calendarFormat = format;
+                    },
+                  );
+                },
+                selectedDayPredicate: (day) {
+                  return isSameDay(_selectedDay, day);
+                },
+                onDaySelected: (selectedDay, focusedDay) {
+                  setState(
+                    () {
+                      _selectedDay = selectedDay;
+                      _focusedDay = focusedDay;
+                      _selectedEvents = partnerScheduleMap[selectedDay] ?? [];
+                    },
+                  );
+                },
+                eventLoader: (date) {
+                  return partnerScheduleMap[date] ?? [];
+                },
               ),
-            ],
-          );
-        });
+            ),
+            PartnerScheduleList(
+              selectedEvents: _selectedEvents,
+              focusedDay: _focusedDay,
+            ),
+          ],
+        );
+      },
+    );
   }
 }
