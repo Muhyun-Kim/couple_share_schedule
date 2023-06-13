@@ -62,6 +62,12 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                     ),
                   ),
                 ),
+                title: SizedBox(
+                  height: 48,
+                  child: Image.asset(
+                    'assets/images/logo_center.png',
+                  ),
+                ),
                 backgroundColor: Color(0xFFC3E99D),
                 elevation: 0.0,
                 iconTheme: IconThemeData(
@@ -96,17 +102,18 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                   partnerInfo == null
                       ? Center(
                           child: TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MobileScannerScreen(
-                                      partnerUid: "",
-                                    ),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MobileScannerScreen(
+                                    partnerUid: "",
                                   ),
-                                );
-                              },
-                              child: Text("パートナーを追加")),
+                                ),
+                              );
+                            },
+                            child: Text("パートナーを追加"),
+                          ),
                         )
                       : PartnerScheduleScreen(
                           partnerInfo: partnerInfo,
