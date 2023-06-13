@@ -1,8 +1,9 @@
 # プロジェクト名（アプリ名）
 
-ペアスケジュール
+## ペアスケジュール
 
-[ios]
+- [ios]
+- [android]
 
 ## プロジェクト説明
 
@@ -10,7 +11,7 @@
 
 ## 何故作ったのか
 
-同棲している環境で互いの時間調整を楽にしたいと思った。
+同棲している環境で互いの時間調整を楽にするため
 
 ## 使用技術
 
@@ -20,17 +21,18 @@
 
 ## 苦労したポイント
 
-- Firebaseからデータを持ってきて、外部パッケージに合わせること
+- Firebase からデータを持ってきて、外部パッケージに合わせること
 
 ## 今後の改善点
 
-- パートナー追加機能のUX改善
+- UX 改善
 
-- Firebaseデータ管理の効率化
+- Firebase データ管理の効率化
+
+- functionsを利用したデータ処理の自動化
 
 - コードの可読性
 
-[//]: # 
-
-    
-   [ios]: <https://apps.apple.com/jp/app/pair-schedule/id6448741321>
+[//]: #
+[ios]: https://apps.apple.com/jp/app/pair-schedule/id6448741321
+[android]: https://play.google.com/store/search?q=%E3%83%9A%E3%82%A2%E3%82%B9%E3%82%B1%E3%82%B8%E3%83%A5%E3%83%BC%E3%83%AB&c=apps&hl=ja
