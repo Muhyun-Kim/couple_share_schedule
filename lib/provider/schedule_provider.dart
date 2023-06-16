@@ -24,11 +24,11 @@ class ScheduleState extends StateNotifier<Map<DateTime, List<String>>> {
   final currentUser = FirebaseAuth.instance.currentUser!;
 
   Future<void> getSchedule(userId) async {
-    final schduleListSnapshot = await FirebaseFirestore.instance
+    final scheduleListSnapshot = await FirebaseFirestore.instance
         .collection(userId)
         .orderBy("selectedDate")
         .get();
-    final schedule = schduleListSnapshot.docs.map((doc) {
+    final schedule = scheduleListSnapshot.docs.map((doc) {
       return doc.data();
     }).toList();
     for (var i = 0; i < schedule.length; i++) {

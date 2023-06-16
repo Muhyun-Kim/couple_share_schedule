@@ -16,10 +16,6 @@ void main() async {
       .then((_) => runApp(const ProviderScope(child: MyApp())));
 }
 
-final firebaseinitializerProvider = FutureProvider<FirebaseApp>((ref) async {
-  return await Firebase.initializeApp();
-});
-
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 

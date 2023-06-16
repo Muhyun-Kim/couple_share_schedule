@@ -29,7 +29,9 @@ class _MyScheduleScreenState extends ConsumerState<MyScheduleScreen> {
   @override
   Widget build(BuildContext context) {
     Map<DateTime, List<String>> _myScheduleMap;
+    final userUid = ref.watch(currentUserProvider)!.uid;
     _myScheduleMap = ref.watch(scheduleProvider);
+    ref.read(scheduleProvider.notifier).getSchedule(userUid);
     final currentUser = ref.read(currentUserProvider);
     final CollectionReference<ScheduleListModel> schedulesReference =
         FirebaseFirestore.instance

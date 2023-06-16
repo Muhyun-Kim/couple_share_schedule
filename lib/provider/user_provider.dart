@@ -9,7 +9,7 @@ final currentUserProvider =
     StateNotifierProvider<AuthState, User?>((ref) => AuthState(ref));
 
 class AuthState extends StateNotifier<User?> {
-  AuthState(this.ref) : super(null);
+  AuthState(this.ref) : super(FirebaseAuth.instance.currentUser);
   Ref ref;
 
   void setUser(User? user) {
@@ -19,6 +19,11 @@ class AuthState extends StateNotifier<User?> {
 
   String getCurrentUserName() {
     return state?.displayName ?? "ゲスト";
+  }
+
+  void changeCurrentUserName(String name){
+    state!.updateDisplayName(name);
+    ref.invalidate(currentUserProvider);
   }
 
   String getCurrentUserPhotoURL() {
