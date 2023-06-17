@@ -5,6 +5,7 @@
 import 'package:couple_share_schedule/provider/auth_state_provider.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:couple_share_schedule/screens/loading_screen.dart';
+import 'package:couple_share_schedule/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,7 +14,7 @@ class AuthWrapper extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authStateAsync = ref.watch(authStateProvider);
     return authStateAsync.when(
-      data: (user) => user != null ? HomeScreen() : LoadingScreen(),
+      data: (user) => user != null ? HomeScreen() : LoginScreen(),
       loading: () => const LoadingScreen(),
       error: (err, stack) => Text("Error: $err"),
     );
