@@ -1,3 +1,7 @@
+//Author : muhyun-kim
+//Modified : 2023/06/07
+//Function : パートナーを追加する画面
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:couple_share_schedule/models/partner_model.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
