@@ -126,7 +126,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               userProvider.setUser(user);
                             },
                             assetImage: 'assets/images/apple_logo.png',
-                            backgroundColor: Colors.black,
+                            backgroundColor: Color.fromARGB(255, 10, 22, 10),
                             scale: 0.56,
                           )
                       ],
