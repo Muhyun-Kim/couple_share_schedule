@@ -3,6 +3,7 @@
 //Function : パートナースケジュール画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/widgets/partner_widget/partner_schedule_list.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -24,7 +25,7 @@ class _PartnerMainScreenBodyState extends ConsumerState<PartnerMainScreenBody> {
   List<String> _selectedEvents = [];
 
   Future<Map<DateTime, List<String>>> getPartnerSchedule() async {
-    final partnerScheduleSnapshot = await FirebaseFirestore.instance
+    final partnerScheduleSnapshot = await db
         .collection(widget.partnerUid)
         .orderBy("selectedDate")
         .get();
@@ -59,7 +60,7 @@ class _PartnerMainScreenBodyState extends ConsumerState<PartnerMainScreenBody> {
   @override
   Widget build(BuildContext context) {
     final partnerScheduleStream =
-        FirebaseFirestore.instance.collection(widget.partnerUid).snapshots();
+        db.collection(widget.partnerUid).snapshots();
     return StreamBuilder<Object>(
       stream: partnerScheduleStream,
       builder: (context, snapshot) {

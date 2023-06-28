@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:couple_share_schedule/provider/user_provider.dart';
@@ -34,7 +35,7 @@ class _MyScheduleScreenState extends ConsumerState<MyScheduleScreen> {
     ref.read(scheduleProvider.notifier).getSchedule(userUid);
     final currentUser = ref.read(currentUserProvider);
     final CollectionReference<ScheduleListModel> schedulesReference =
-        FirebaseFirestore.instance
+        db
             .collection(currentUser!.uid)
             .withConverter<ScheduleListModel>(
       fromFirestore: ((snapshot, _) {

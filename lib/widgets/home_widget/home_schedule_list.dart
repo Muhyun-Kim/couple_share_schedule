@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:couple_share_schedule/widgets/modal_widget/update_schedule_modal.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,7 +30,7 @@ class _HomeScheduleListState extends ConsumerState<HomeScheduleList> {
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final docName = widget.focusedDay.toString().substring(0, 10);
-    final docRef = FirebaseFirestore.instance.collection(userId).doc(docName);
+    final docRef = db.collection(userId).doc(docName);
     return SizedBox(
       //selectedEventsを削除する機能を追加する
       height: 300,

@@ -15,7 +15,6 @@ class PartnerScheduleList extends StatefulWidget {
 }
 
 class _PartnerScheduleListState extends State<PartnerScheduleList> {
-  final db = FirebaseFirestore.instance;
 
   @override
   Widget build(BuildContext context) {

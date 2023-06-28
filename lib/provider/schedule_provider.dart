@@ -3,6 +3,7 @@
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -24,10 +25,8 @@ class ScheduleState extends StateNotifier<Map<DateTime, List<String>>> {
   final currentUser = FirebaseAuth.instance.currentUser!;
 
   Future<void> getSchedule(userId) async {
-    final scheduleListSnapshot = await FirebaseFirestore.instance
-        .collection(userId)
-        .orderBy("selectedDate")
-        .get();
+    final scheduleListSnapshot =
+        await db.collection(userId).orderBy("selectedDate").get();
     final schedule = scheduleListSnapshot.docs.map((doc) {
       return doc.data();
     }).toList();

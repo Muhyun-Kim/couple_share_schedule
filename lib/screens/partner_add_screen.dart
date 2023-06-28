@@ -3,6 +3,7 @@
 //Function : パートナーを追加する画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/models/partner_model.dart';
 import 'package:couple_share_schedule/screens/home_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -87,7 +88,7 @@ class _PartnerAddScreenState extends ConsumerState<PartnerAddScreen> {
                       partnerName: _partnerNameInput.text,
                     );
                     print(newPartner);
-                    await FirebaseFirestore.instance
+                    await db
                         .collection(currentUserUid)
                         .doc("partner")
                         .set(newPartner.toJson());
