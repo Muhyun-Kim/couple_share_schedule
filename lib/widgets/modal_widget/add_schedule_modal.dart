@@ -3,6 +3,7 @@
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/models/schedule_list_model.dart';
 import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,10 +44,8 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
   Future getScheduleInfo() async {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final docName = widget.focusedDay.toString().substring(0, 10);
-    print(docName);
-    final schduleSnapshot =
-        await FirebaseFirestore.instance.collection(userId).doc(docName).get();
-    final scheduleInfo = schduleSnapshot.data();
+    final scheduleSnapshot = await db.collection(userId).doc(docName).get();
+    final scheduleInfo = scheduleSnapshot.data();
     return scheduleInfo;
   }
 

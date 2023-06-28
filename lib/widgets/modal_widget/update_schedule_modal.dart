@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/provider/schedule_provider.dart';
 import 'package:couple_share_schedule/widgets/left_menu_widget/full_image_screen.dart';
 import 'package:couple_share_schedule/widgets/modal_widget/add_schedule_modal.dart';
@@ -61,7 +62,7 @@ class _UpdateScheduleModalState extends ConsumerState<UpdateScheduleModal> {
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser!.uid;
     final docName = widget.focusedDay.toString().substring(0, 10);
-    final docRef = FirebaseFirestore.instance.collection(userId).doc(docName);
+    final docRef = db.collection(userId).doc(docName);
     print(docRef);
     final formattedDate = DateFormat('MM月dd日').format(widget.focusedDay);
     return SizedBox(

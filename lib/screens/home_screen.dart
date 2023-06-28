@@ -3,6 +3,7 @@
 //Function : ログイン状態の時、最初表示される画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:couple_share_schedule/provider/user_provider.dart';
 import 'package:couple_share_schedule/screens/loading_screen.dart';
 import 'package:couple_share_schedule/screens/mobile_scanner_screen.dart';
@@ -22,7 +23,7 @@ class HomeScreen extends ConsumerStatefulWidget {
 
 class _HomeScreenState extends ConsumerState<HomeScreen> {
   final partnerStream =
-      FirebaseFirestore.instance.collection(userUid).doc("partner").snapshots();
+      db.collection(userUid).doc("partner").snapshots();
 
   @override
   void initState() {

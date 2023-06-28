@@ -3,6 +3,7 @@
 //Function : パートナースケジュール画面
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:couple_share_schedule/db/firestore_db.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -19,7 +20,7 @@ class PartnerScheduleScreen extends ConsumerStatefulWidget {
 }
 
 class _PartnerScheduleScreenState extends ConsumerState<PartnerScheduleScreen> {
-  final partnerInfoStream = FirebaseFirestore.instance
+  final partnerInfoStream = db
       .collection(FirebaseAuth.instance.currentUser!.uid)
       .doc("partner")
       .snapshots();
