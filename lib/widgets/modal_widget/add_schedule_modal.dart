@@ -206,6 +206,7 @@ class _AddScheduleModalState extends ConsumerState<AddScheduleModal> {
                                   FieldValue.arrayUnion(scheduleInfoList)
                             });
                           }
+                          
                           if (mounted) {
                             await ref
                                 .read(scheduleProvider.notifier)
